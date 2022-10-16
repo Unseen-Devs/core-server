@@ -1,1 +1,0 @@
-{"version":3,"file":"upload_provider.js","sourceRoot":"","sources":["../../../src/graphql/enums/upload_provider.ts"],"names":[],"mappings":";;;AAAA,6CAAmD;AAEnD,IAAY,cAGX;AAHD,WAAY,cAAc;IACxB,iCAAe,CAAA;IACf,2BAAS,CAAA;AACX,CAAC,EAHW,cAAc,GAAd,sBAAc,KAAd,sBAAc,QAGzB;AAED,IAAA,0BAAgB,EAAC,cAAc,EAAE;IAC/B,IAAI,EAAE,gBAAgB;IACtB,WAAW,EAAE,gBAAgB;CAC9B,CAAC,CAAC"}

@@ -1,12 +1,39 @@
-version: '3.9'
+version: '3.8'
 services:
-  search_engine:
-    image: getmeili/meilisearch:v0.20.0
-    restart: always
-    volumes:
-      - ./meilidata:/data.ms
-    environment:
-      MEILI_ENV: development
-      MEILI_HTTP_PAYLOAD_SIZE_LIMIT: '104857600'
+  dev:
+    container_name: askhunnft_api_dev
+    image: askhunnft-api-dev:1.0.0
+    build:
+      context: .
+      target: development
+      dockerfile: ./Dockerfile
+    command: npm run start:debug
     ports:
-      - 7700:7700
+      - 3000:3000
+      - 9229:9229
+    networks:
+      - nesjs-network
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    restart: unless-stopped
+  prod:
+    container_name: askhunnft_api_prod
+    image: askhunnft-api-prod:1.0.0
+    build:
+      context: .
+      target: production
+      dockerfile: ./Dockerfile
+    command: npm run start:prod
+    ports:
+      - 3000:3000
+      - 9229:9229
+    networks:
+      - askhunnft-network
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    restart: unless-stopped
+
+networks:
+  askhunnft-network:
