@@ -45,7 +45,7 @@
     "@nestjs/platform-express": "^8.4.7",
     "@nestjs/schedule": "^2.0.1",
     "@nestjs/serve-static": "^2.2.2",
-    "@nestjs/typeorm": "^8.1.4",
+    "@nestjs/typeorm": "8.0.3",
     "@sendgrid/mail": "^7.7.0",
     "@types/k6": "^0.37.0",
     "accesscontrol": "^2.2.1",
@@ -91,7 +91,7 @@
     "rxjs": "^7.5.5",
     "sharp": "^0.30.7",
     "sonyflake": "^1.1.2",
-    "typeorm": "^0.3.6",
+    "typeorm": "0.2.45",
     "typeorm-adapter": "^1.5.0"
   },
   "devDependencies": {
@@ -133,7 +133,7 @@
     "ts-node": "^10.8.1",
     "tsc-watch": "^5.0.3",
     "tsconfig-paths": "^4.0.0",
-    "typescript": "^4.7.4",
+    "typescript": "4.6.4",
     "yarn-upgrade-all": "^0.7.1"
   },
   "jest": {

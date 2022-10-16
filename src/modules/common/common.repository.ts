@@ -1,4 +1,4 @@
-import { EntityRepository, Repository, FindManyOptions, FindOneOptions, SelectQueryBuilder } from 'typeorm';
+import { EntityRepository, Repository, FindManyOptions, FindOneOptions, SelectQueryBuilder, ObjectLiteral } from 'typeorm';
 import { encode, decode } from 'opaqueid';
 import { PaginationArgs } from 'src/graphql/types/common.args';
 import { Pagination } from './pagination';
@@ -146,7 +146,7 @@ export interface PaginateOptions<Entity, K extends keyof Entity> {
 }
 
 @EntityRepository()
-export class CommonRepository<Model> extends Repository<Model> {
+export class CommonRepository<Model extends ObjectLiteral> extends Repository<Model> {
   async paginate(
     data: PaginationArgs,
     searchOptions?: FindOneOptions<Model> | FindManyOptions<Model>,

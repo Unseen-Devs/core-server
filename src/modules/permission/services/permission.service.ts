@@ -4,6 +4,7 @@ import { RoleRepository } from '../repositories/role.repository';
 import { Role } from '../entities/role.entity';
 import { UsersService } from 'src/modules/users/services/users.service';
 import { PaginationArgs } from 'src/graphql/types/common.args';
+import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
 
 @Injectable()
 export class PermissionService {
@@ -22,7 +23,7 @@ export class PermissionService {
     return true;
   }
 
-  update = async (id: string, data: DeepPartial<Role>) => {
+  update = async (id: string, data: QueryDeepPartialEntity<Role>) => {
     await this.roleRepository.update(id, data);
     return this.findOne(id);
   };
