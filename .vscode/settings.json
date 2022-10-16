@@ -1,0 +1,12 @@
+{
+  "editor.formatOnSave": true,
+  "[handlebars]": {
+    "editor.formatOnSave": false
+  },
+  "typescript.referencesCodeLens.enabled": true,
+  "vsicons.presets.nestjs": true,
+  "vsicons.presets.angular": false,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true
+  }
+}
