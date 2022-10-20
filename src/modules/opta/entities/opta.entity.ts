@@ -29,7 +29,7 @@ export class Opta extends BaseEntity implements Node {
   isPublished: boolean;
 
   @Column({
-    type: 'int4',
+    type: 'int',
     nullable: false,
     unsigned: true,
   })

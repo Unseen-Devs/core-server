@@ -26,6 +26,9 @@ package-lock.json
 /coverage
 /.nyc_output
 
+# Environment
+.env
+
 # IDEs and editors
 /.idea
 .project
