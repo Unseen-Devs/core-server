@@ -1,20 +1,15 @@
-import { Request, Response } from 'express';
-import { GqlModuleOptions } from '@nestjs/graphql';
-import { ApolloComplexityPlugin } from './plugins/ApolloComplexityPlugin';
-import { isProduction } from 'src/helpers/environtment';
-import { GraphQLError, GraphQLFormattedError } from 'graphql';
-import { ApolloError, AuthenticationError } from 'apollo-server-errors';
 import { ApolloDriver } from '@nestjs/apollo';
-import { GraphQLContext } from './app.graphql-context';
+import { GqlModuleOptions } from '@nestjs/graphql';
+import { Request, Response } from 'express';
 
 export const gqlOptions: GqlModuleOptions<ApolloDriver> = {
   fieldResolverEnhancers: ['guards', 'interceptors'],
   useGlobalPrefix: false,
   driver: ApolloDriver,
-  // playground: !isProduction,
+  // playground: true,
   // debug: !isProduction,
   // installSubscriptionHandlers: false,
-  autoSchemaFile: true,
+  autoSchemaFile: 'schema.gql',
   // tracing: !isProduction,
   // plugins: [new ApolloComplexityPlugin(100)],
   // formatError: (error: GraphQLError) => {

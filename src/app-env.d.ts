@@ -14,20 +14,8 @@ declare namespace NodeJS {
     readonly DATABASE_SYNC?: 'true' | 'false';
     readonly DATABASE_LOGGING?: 'true' | 'false';
 
-    // Sendgrid
-    readonly SENDGRID_API_KEY?: string;
-    readonly EMAIL_SERVER_SENDER_FROM?: string;
-
-    // Amazon
-    readonly AWS_ACCESS_KEY_ID?: string;
-    readonly AWS_SECRET_KEY_ACCESS?: string;
-    readonly AWS_S3_BUCKET_NAME?: string;
-
-    // Apple login
-    readonly APPLE_TEAM_ID?: string;
-    readonly APPLE_KEY_PATH?: string;
-    readonly APPLE_CLIENT_ID?: string;
-    readonly APPLE_KEY_ID?: string;
-    readonly APPLE_REDIRECT_URI?: string;
+    // OPTA
+    readonly OPTA_OUTLET_AUTH_KEY: string;
+    readonly OPTA_BASE_URL: string
   }
 }

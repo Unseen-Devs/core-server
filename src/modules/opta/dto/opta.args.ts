@@ -2,7 +2,7 @@ import { Max, Min } from 'class-validator';
 import { ArgsType, Field, Int } from '@nestjs/graphql';
 
 @ArgsType()
-export class CategoryListArgs {
+export class OptaListArgs {
   @Field(() => Int, {
     defaultValue: 15,
   })

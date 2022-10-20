@@ -1,0 +1,152 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type PageInfo {
+  startCursor: String
+  endCursor: String
+  hasPrevPage: Boolean!
+  hasNextPage: Boolean!
+}
+
+type BasePaginationMeta {
+  itemCount: Float!
+  totalItems: Float!
+  itemsPerPage: Float!
+  totalPages: Float!
+  currentPage: Float!
+}
+
+"""Opta"""
+type Opta implements Node {
+  id: ID!
+  title: String!
+  isPublished: Boolean!
+  ownerId: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+"""Node"""
+interface Node {
+  id: ID!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type TournamentCalendarInfo {
+  id: String
+  includesVenues: String
+  ocId: String
+  name: String
+  startDate: String
+  endDate: String
+  active: String
+  lastUpdated: DateTime
+  includesStandings: String
+}
+
+type CompetitionModel {
+  id: String
+  ocId: String
+  opId: String
+  name: String
+  competitionCode: String
+  displayOrder: Float
+  country: String
+  countryId: String
+  countryCode: String
+  isFriendly: String
+  competitionFormat: String
+  type: String
+  tournamentCalendar: [TournamentCalendarInfo!]
+  competitionType: String
+}
+
+type TournamentCalendarModel {
+  competition: [CompetitionModel!]
+  lastUpdated: DateTime!
+}
+
+type MatchInfoModel {
+  id: String
+  date: String
+  time: String
+  contestant: [MatchContestantModel!]
+}
+
+type MatchContestantModel {
+  id: String
+  name: String
+  shortName: String
+  officialName: String
+  code: String
+  position: String
+}
+
+type FixturesModelAndResultsModel {
+  match: [MatchInfoModel!]
+}
+
+type TournamentScheduleDetailModel {
+  id: String
+  coverageLevel: String
+  optaBetting: String
+  date: String
+  time: String
+  localDate: String
+  localTime: String
+  homeContestantId: String
+  awayContestantId: String
+  homeContestantName: String
+  awayContestantName: String
+  homeContestantOfficialName: String
+  awayContestantOfficialName: String
+  homeContestantShortName: String
+  awayContestantShortName: String
+  homeContestantCode: String
+  awayContestantCode: String
+  numberOfPeriods: Float
+  periodLength: Float
+}
+
+type TournamentScheduleModel {
+  schedule: [TournamentScheduleDetailModel!]
+}
+
+type MatchEventGoal {
+  contestantId: String
+  periodId: Float
+  timeMin: Float
+  timeMinSec: String
+  lastUpdated: String
+  timestamp: String
+  type: String
+  scorerId: String
+  scorerName: String
+  assistPlayerId: String
+  assistPlayerName: String
+  secondAssistPlayerId: String
+  ocSecondAssistPlayerId: String
+  opSecondAssistPlayerId: String
+  secondAssistPlayerName: String
+  optaEventId: String
+  homeScore: Float
+  awayScore: Float
+}
+
+type MatchEventModel {
+  description: String
+  contestant: [MatchContestantModel!]
+  goal: [MatchEventGoal!]
+}
+
+type Query {
+  getTournamentCalendar: TournamentCalendarModel
+  getTournamentSchedule: TournamentScheduleModel
+  getFixturesAndResults: FixturesModelAndResultsModel
+  getMatchEvents(fixtureId: String!): MatchEventModel
+}

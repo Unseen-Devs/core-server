@@ -1,14 +1,17 @@
 import { Entity, Column, BaseEntity, DeepPartial, Index } from 'typeorm';
 import { CreateDateColumn, UpdateDateColumn } from 'typeorm';
-import { ObjectType, Field, Int, ID } from '@nestjs/graphql';
-import { Node } from 'src/graphql/types/common.interface.entity';
+import { ObjectType, ID, Field } from '@nestjs/graphql';
+import { Node, PaginationBase } from 'src/graphql/types/common.interface.entity';
 import { snowflake } from 'src/helpers/common';
 
-@ObjectType('Blog')
-@Entity({
-  name: 'blogs',
+@ObjectType('Opta', {
+  description: 'Opta',
+  implements: [Node],
 })
-export class BlogEntity extends BaseEntity implements Node {
+@Entity({
+  name: 'opta',
+})
+export class Opta extends BaseEntity implements Node {
   @Field(() => ID)
   @Column('bigint', {
     primary: true,
@@ -16,27 +19,21 @@ export class BlogEntity extends BaseEntity implements Node {
   })
   id: string;
 
-  @Column({ length: 500, comment: 'Title of blog' })
+  @Column({ length: 500 })
   @Index()
   title: string;
 
-  @Column('text', {
-    comment: 'Content of blog',
-  })
-  content: string;
-
-  @Field(() => Int)
-  @Column('int', {
-    default: 0,
-    comment: 'Total view by client',
-  })
-  views: number;
-
   @Column({
     default: true,
-    comment: 'Set published',
   })
   isPublished: boolean;
+
+  @Column({
+    type: 'int4',
+    nullable: false,
+    unsigned: true,
+  })
+  ownerId: string;
 
   @CreateDateColumn()
   createdAt: Date;
@@ -44,8 +41,11 @@ export class BlogEntity extends BaseEntity implements Node {
   @UpdateDateColumn()
   updatedAt: Date;
 
-  constructor(data: DeepPartial<BlogEntity>) {
+  constructor(data: DeepPartial<Opta>) {
     super();
     Object.assign(this, { id: snowflake.nextId(), ...data });
   }
 }
+
+@ObjectType()
+export class OptaConnection extends PaginationBase(Opta) {}

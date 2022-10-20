@@ -52,12 +52,21 @@ async function bootstrap() {
   );
   app.useGlobalFilters(new HttpExceptionFilter());
 
+  // app.use(
+  //   helmet({
+  //     crossOriginResourcePolicy: false,
+  //     contentSecurityPolicy: false,
+  //     frameguard: { action: 'SAMEORIGIN' },
+  //     crossOriginEmbedderPolicy: false
+  //   }),
+  // );
   app.use(
-    helmet({
-      contentSecurityPolicy: false,
-    }),
+    helmet({ 
+      contentSecurityPolicy: process.env.NODE_ENV === 'production' ? undefined : false, 
+      crossOriginResourcePolicy: false, 
+      crossOriginEmbedderPolicy: false
+    })
   );
-  app.use(helmet({ contentSecurityPolicy: process.env.NODE_ENV === 'production' ? undefined : false }));
   app.use(compression());
   useContainer(app.select(AppModule), { fallbackOnErrors: true });
 

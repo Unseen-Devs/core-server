@@ -1,20 +1,20 @@
 import { Field, ObjectType, Int } from '@nestjs/graphql';
 import { PageInfo } from 'src/graphql/types/common.interface.entity';
-import { Category } from './category.entity';
+import { Opta } from './opta.entity';
 
 @ObjectType('CategoryEdge', {
   description: 'CategoryEdge',
 })
-export class CategoryEdge {
-  node: Category;
+export class OptaEdge {
+  node: Opta;
   cursor: string;
 }
 
-@ObjectType('CategoryConnection', {
-  description: 'CategoryConnection',
+@ObjectType('OptaConnection', {
+  description: 'OptaConnection',
 })
 export class CategoryConnection {
-  edges?: CategoryEdge[];
+  edges?: OptaEdge[];
 
   @Field(() => Int)
   totalCount: number;
