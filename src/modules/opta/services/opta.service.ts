@@ -32,7 +32,6 @@ export class OptaService {
     }
     const tournamentCalendarId = tournamentCalendar.competition[0]?.tournamentCalendar[0]?.id;
     const url = `${OPTA_BASE_URL}/tournamentschedule/${OPTA_OUTLET_AUTH_KEY}\?tmcl=${tournamentCalendarId}&_rt\=b\&_fmt\=json`;
-    console.log(url);
     return await axios.get(url).then((response) => {
       if(response.status !== 200){
         throw new ApolloError('Get Tournament Schedule Fail', 'get_tournament_schedule_failed');
@@ -73,7 +72,12 @@ export class OptaService {
   }
 
   async getFixturesAndResults(){
-    const url = `${OPTA_BASE_URL}/match/${OPTA_OUTLET_AUTH_KEY}\?_rt\=b\&_fmt\=json`;
+    const tournamentCalendar = await this.getTournamentCalendar();
+    if(!tournamentCalendar){
+      throw new ApolloError('Get Tournament Calendar Fail', 'get_tournament_calendar_failed');
+    }
+    const tournamentCalendarId = tournamentCalendar.competition[0]?.tournamentCalendar[0]?.id;
+    const url = `${OPTA_BASE_URL}/match/${OPTA_OUTLET_AUTH_KEY}\?tmcl=${tournamentCalendarId}&_rt\=b\&_fmt\=json&week=13&_ordSrt=asc`;
     return await axios.get(url).then((response) => {
       if(response.status !== 200){
         throw new ApolloError('Get Fixtures and Results Fail', 'get_tournament_schedule_failed');
@@ -97,7 +101,6 @@ export class OptaService {
   
   async getMatchEvents(fixtureId: string){
     const url = `${OPTA_BASE_URL}/matchstats/${OPTA_OUTLET_AUTH_KEY}/${fixtureId}\?_rt\=b\&_fmt\=json`;
-    console.log(url);
     return await axios.get(url).then((response) => {
       if(response.status !== 200){
         throw new ApolloError('Get Match Stats Fail', 'get_match_event_failed');
