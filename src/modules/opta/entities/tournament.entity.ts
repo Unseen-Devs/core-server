@@ -83,8 +83,8 @@ export class MatchInfoModel {
     @Field(() => ScoresModel, { nullable: true })
     scores: ScoresModel;
 
-    @Field(() => GoalModel, { nullable: true })
-    goal: GoalModel
+    @Field(() => [GoalModel], { nullable: true })
+    goal: GoalModel[]
 }
 
 
