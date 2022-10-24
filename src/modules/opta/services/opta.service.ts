@@ -3,6 +3,7 @@ import { ApolloError } from 'apollo-server';
 import axios from 'axios';
 import { TournamentCalendarModel } from '../entities/opta_model.entity';
 import { TournamentScheduleDetailModel } from '../entities/tournament.entity';
+import { FixturesAndResultsArgs } from '../dto/opta.args';
 
 const OPTA_OUTLET_AUTH_KEY = process.env.OPTA_OUTLET_AUTH_KEY;
 const OPTA_BASE_URL = process.env.OPTA_BASE_URL;
@@ -71,14 +72,28 @@ export class OptaService {
     });
   }
 
-  async getFixturesAndResults(){
+  async getFixturesAndResults(input: FixturesAndResultsArgs){
     const tournamentCalendar = await this.getTournamentCalendar();
     if(!tournamentCalendar){
       throw new ApolloError('Get Tournament Calendar Fail', 'get_tournament_calendar_failed');
     }
     const tournamentCalendarId = tournamentCalendar.competition[0]?.tournamentCalendar[0]?.id;
-    const url = `${OPTA_BASE_URL}/match/${OPTA_OUTLET_AUTH_KEY}\?tmcl=${tournamentCalendarId}&_rt\=b\&_fmt\=json&week=13&_ordSrt=asc`;
-    return await axios.get(url).then((response) => {
+    const url = `${OPTA_BASE_URL}/match/${OPTA_OUTLET_AUTH_KEY}\?tmcl=${tournamentCalendarId}`;
+
+    const {
+      status,
+      mtMDt
+    } = input;
+    return await axios.get(url, {
+      params: {
+        _rt: "b",
+        _fmt: "json",
+        _ordSrt: "asc",
+        live: "yes",
+        status: status,
+        "mt.mDt": mtMDt,//[YYYY-MM-DDTHH:MM:SSZ TO YYYY-MM-DDTHH:MM:SSZ]
+      }
+    }).then((response) => {
       if(response.status !== 200){
         throw new ApolloError('Get Fixtures and Results Fail', 'get_tournament_schedule_failed');
       }
@@ -88,7 +103,9 @@ export class OptaService {
           id: d.matchInfo.id,
           date: d.matchInfo.date,
           time: d.matchInfo.time,
-          contestant: d.matchInfo.contestant
+          contestant: d.matchInfo.contestant,
+          scores: d.liveData.matchDetails.scores,
+          goal: d.liveData.goal,
         }
       })
       return { match: rs };

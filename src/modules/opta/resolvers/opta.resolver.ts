@@ -4,6 +4,7 @@ import { OptaService } from '../services/opta.service';
 import { TournamentCalendarModel } from '../entities/opta_model.entity';
 import { FixturesModelAndResultsModel, TournamentScheduleModel } from '../entities/tournament.entity';
 import { MatchEventModel } from '../entities/match_event_model.entity';
+import { FixturesAndResultsArgs } from '../dto/opta.args';
 
 @Resolver(() => Opta)
 export class OptaResolver {
@@ -26,8 +27,9 @@ export class OptaResolver {
   @Query(() => FixturesModelAndResultsModel, {
     nullable: true,
   })
-  async getFixturesAndResults() {
-    return await this.optaService.getFixturesAndResults();
+  async getFixturesAndResults(@Args() input: FixturesAndResultsArgs) {
+
+    return await this.optaService.getFixturesAndResults(input);
   }
 
   @Query(() => MatchEventModel, {

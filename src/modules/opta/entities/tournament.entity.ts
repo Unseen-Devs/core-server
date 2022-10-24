@@ -1,6 +1,71 @@
 import { Field, ObjectType } from '@nestjs/graphql';
 
 @ObjectType()
+export class GoalModel {
+    @Field({ nullable: true })
+    contestantId: string;
+
+    @Field({ nullable: true })
+    periodId: number;
+
+    @Field({ nullable: true })
+    timeMin: number;
+
+    @Field({ nullable: true })
+    timeMinSec: string;
+
+    @Field({ nullable: true })
+    lastUpdated: string;
+
+    @Field({ nullable: true })
+    timestamp: string;
+
+    @Field({ nullable: true })
+    type: string;
+
+    @Field({ nullable: true })
+    scorerId: string;
+    
+    @Field({ nullable: true })
+    scorerName: string;
+
+    @Field({ nullable: true })
+    optaEventId: string;
+
+    @Field({ nullable: true })
+    homeScore: number;
+
+    @Field({ nullable: true })
+    awayScore: number;
+
+    @Field({ nullable: true })
+    varReviewed: string;
+
+    @Field({ nullable: true })
+    originalDecision: string;
+}
+
+@ObjectType()
+export class ScoreModel {
+    @Field({ nullable: true })
+    home: number;
+
+    @Field({ nullable: true })
+    away: number;
+}
+@ObjectType()
+export class ScoresModel {
+    @Field(() => ScoreModel, { nullable: true })
+    ht: ScoreModel;
+
+    @Field(() => ScoreModel, { nullable: true })
+    ft: ScoreModel;
+
+    @Field(() => ScoreModel, { nullable: true })
+    total: ScoreModel
+}
+
+@ObjectType()
 export class MatchInfoModel {
 
     @Field({nullable: true})
@@ -14,7 +79,14 @@ export class MatchInfoModel {
 
     @Field(()=> [MatchContestantModel], { nullable : true })
     contestant: MatchContestantModel[]
+
+    @Field(() => ScoresModel, { nullable: true })
+    scores: ScoresModel;
+
+    @Field(() => GoalModel, { nullable: true })
+    goal: GoalModel
 }
+
 
 
 @ObjectType()

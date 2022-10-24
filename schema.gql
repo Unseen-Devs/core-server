@@ -71,11 +71,41 @@ type TournamentCalendarModel {
   lastUpdated: DateTime!
 }
 
+type GoalModel {
+  contestantId: String
+  periodId: Float
+  timeMin: Float
+  timeMinSec: String
+  lastUpdated: String
+  timestamp: String
+  type: String
+  scorerId: String
+  scorerName: String
+  optaEventId: String
+  homeScore: Float
+  awayScore: Float
+  varReviewed: String
+  originalDecision: String
+}
+
+type ScoreModel {
+  home: Float
+  away: Float
+}
+
+type ScoresModel {
+  ht: ScoreModel
+  ft: ScoreModel
+  total: ScoreModel
+}
+
 type MatchInfoModel {
   id: String
   date: String
   time: String
   contestant: [MatchContestantModel!]
+  scores: ScoresModel
+  goal: GoalModel
 }
 
 type MatchContestantModel {
@@ -147,6 +177,16 @@ type MatchEventModel {
 type Query {
   getTournamentCalendar: TournamentCalendarModel
   getTournamentSchedule: TournamentScheduleModel
-  getFixturesAndResults: FixturesModelAndResultsModel
+  getFixturesAndResults(status: FixtureStatus!, mtMDt: String!): FixturesModelAndResultsModel
   getMatchEvents(fixtureId: String!): MatchEventModel
+}
+
+enum FixtureStatus {
+  Fixture
+  Played
+  Playing
+  Cancelled
+  Postponed
+  Suspended
+  All
 }
