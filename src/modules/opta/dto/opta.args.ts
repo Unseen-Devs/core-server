@@ -1,5 +1,6 @@
 import { Max, Min } from 'class-validator';
-import { ArgsType, Field, Int, registerEnumType } from '@nestjs/graphql';
+import { ArgsType, Field, Int } from '@nestjs/graphql';
+import { FixtureStatus } from '../enums/opta.enum';
 
 @ArgsType()
 export class OptaListArgs {
@@ -17,15 +18,7 @@ export class OptaListArgs {
   page?: number;
 }
 
-export enum FixtureStatus {
-  Fixture="Fixture",
-  Played="Played",
-  Playing="Playing",
-  Cancelled="Cancelled",
-  Postponed="Postponed",
-  Suspended="Suspended",
-  All="All"
-}
+
 
 @ArgsType()
 export class FixturesAndResultsArgs {
@@ -35,7 +28,3 @@ export class FixturesAndResultsArgs {
   @Field(() => String)
   mtMDt: string
 }
-
-registerEnumType(FixtureStatus, {
-  name: 'FixtureStatus',
-});

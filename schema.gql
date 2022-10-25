@@ -81,6 +81,8 @@ type GoalModel {
   type: String
   scorerId: String
   scorerName: String
+  assistPlayerId: String
+  assistPlayerName: String
   optaEventId: String
   homeScore: Float
   awayScore: Float
@@ -104,8 +106,19 @@ type MatchInfoModel {
   date: String
   time: String
   contestant: [MatchContestantModel!]
+  matchStatus: FixtureStatus
   scores: ScoresModel
-  goal: GoalModel
+  goal: [GoalModel!]
+}
+
+enum FixtureStatus {
+  Fixture
+  Played
+  Playing
+  Cancelled
+  Postponed
+  Suspended
+  All
 }
 
 type MatchContestantModel {
@@ -179,14 +192,4 @@ type Query {
   getTournamentSchedule: TournamentScheduleModel
   getFixturesAndResults(status: FixtureStatus!, mtMDt: String!): FixturesModelAndResultsModel
   getMatchEvents(fixtureId: String!): MatchEventModel
-}
-
-enum FixtureStatus {
-  Fixture
-  Played
-  Playing
-  Cancelled
-  Postponed
-  Suspended
-  All
 }

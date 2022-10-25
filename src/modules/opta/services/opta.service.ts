@@ -99,12 +99,12 @@ export class OptaService {
       }
       const data = response.data.match;
       const rs = data.map(d => {
-        console.log("data match", d);
         return {
           id: d.matchInfo.id,
           date: d.matchInfo.date,
           time: d.matchInfo.time,
           contestant: d.matchInfo.contestant,
+          matchStatus: d.liveData.matchDetails.matchStatus,
           scores: d.liveData.matchDetails.scores,
           goal: d.liveData.goal,
         }

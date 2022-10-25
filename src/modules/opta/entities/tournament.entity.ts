@@ -1,4 +1,5 @@
 import { Field, ObjectType } from '@nestjs/graphql';
+import { FixtureStatus } from '../enums/opta.enum';
 
 @ObjectType()
 export class GoalModel {
@@ -28,6 +29,12 @@ export class GoalModel {
     
     @Field({ nullable: true })
     scorerName: string;
+
+    @Field({ nullable: true })
+    assistPlayerId: string;
+
+    @Field({ nullable: true })
+    assistPlayerName: string;
 
     @Field({ nullable: true })
     optaEventId: string;
@@ -80,14 +87,15 @@ export class MatchInfoModel {
     @Field(()=> [MatchContestantModel], { nullable : true })
     contestant: MatchContestantModel[]
 
+    @Field(() => FixtureStatus, { nullable: true })
+    matchStatus: FixtureStatus
+
     @Field(() => ScoresModel, { nullable: true })
     scores: ScoresModel;
 
     @Field(() => [GoalModel], { nullable: true })
     goal: GoalModel[]
 }
-
-
 
 @ObjectType()
 export class MatchContestantModel {
