@@ -8,6 +8,7 @@ import { useContainer } from 'class-validator';
 import { AppModule } from './app.module';
 import cookieParser from 'cookie-parser';
 import { HttpExceptionFilter } from './middlewares/HttpExceptionFilter';
+import {WsAdapter } from '@nestjs/platform-ws';
 
 const PORT = parseInt(process.env.PORT ?? '3000', 10);
 
@@ -69,6 +70,9 @@ async function bootstrap() {
   );
   app.use(compression());
   useContainer(app.select(AppModule), { fallbackOnErrors: true });
+
+  // WebSocket Adapter
+  app.useWebSocketAdapter(new WsAdapter(app));
 
   await app.listen(PORT);
   console.info(`Application is running on: ${await app.getUrl()}`);

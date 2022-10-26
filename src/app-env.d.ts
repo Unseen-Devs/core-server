@@ -16,6 +16,7 @@ declare namespace NodeJS {
 
     // OPTA
     readonly OPTA_OUTLET_AUTH_KEY: string;
-    readonly OPTA_BASE_URL: string
+    readonly OPTA_BASE_URL: string;
+    readonly OPTA_WEBSOCKET_URL: string;
   }
 }

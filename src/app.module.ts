@@ -6,6 +6,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { gqlOptions } from './graphql/gql-options';
 import { LoggerMiddleware } from './middlewares/logger.middleware';
 import { CommonModule } from './modules/common/common.module';
+import { EventsModule } from './modules/events/events.module';
 import { OptaModule } from './modules/opta/opta.module';
 import { SendGridTransport } from './transport/nodemailer-sendgrid';
 import { typeORMConfig } from './typeorm.config';
@@ -30,6 +31,7 @@ import { typeORMConfig } from './typeorm.config';
         },
       },
     }),
+    EventsModule,
     CommonModule,
     OptaModule,
   ],
