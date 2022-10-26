@@ -147,4 +147,40 @@ export class OptaService {
       throw new ApolloError('Get Match Stats Fail', 'get_match_event_failed');
     });
   }
+
+ async getMatchEventsMA3(fixtureId:string, personUUID: string) {
+  try {
+    const url = `${OPTA_BASE_URL}/matchevent/${OPTA_OUTLET_AUTH_KEY}/${fixtureId}`;
+
+  const params = {
+    _rt: "b",
+    _fmt: "json",
+    prsn:personUUID,
+    type:"1,2,3,7,8,10,11,12,13,14,15,16,41,42,50,54,61,73,74"
+  };
+    return await axios.get(url, {
+      params
+    }).then((response) => {
+      if(response.status !== 200){
+        throw new ApolloError('Get Match Events MA3 Fail', 'get_match_event_ma3_failed');
+      }
+      const data = response.data.match;
+      const rs = data.map(d => {
+        return {
+          id: d.matchInfo.id,
+          date: d.matchInfo.date,
+          time: d.matchInfo.time,
+          contestant: d.matchInfo.contestant,
+          matchStatus: d.liveData.matchDetails.matchStatus,
+          scores: d.liveData.matchDetails.scores,
+          event: d.liveData.event,
+        }
+      })
+      return { match: rs };
+    });
+  } catch (error) {
+    console.log('error', error);
+      throw new ApolloError('Get Match Events MA3 Fail', 'get_match_event_ma3_failed');
+    };
+  }  
 }
