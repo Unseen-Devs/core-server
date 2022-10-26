@@ -30,11 +30,17 @@ export class GoalModel {
     @Field({ nullable: true })
     scorerName: string;
 
+    @Field({nullable: true})
+    scorerPlayerTouch: number;
+
     @Field({ nullable: true })
     assistPlayerId: string;
 
     @Field({ nullable: true })
     assistPlayerName: string;
+
+    @Field({nullable: true})
+    assistPlayerTouch: number;
 
     @Field({ nullable: true })
     optaEventId: string;

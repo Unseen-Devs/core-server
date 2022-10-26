@@ -1,4 +1,4 @@
-import { Field, ObjectType } from '@nestjs/graphql';
+import { Field, Float, Int, ObjectType } from '@nestjs/graphql';
 import { MatchContestantModel } from './tournament.entity';
 
 
@@ -71,4 +71,77 @@ export class MatchEventModel{
 
     @Field(()=> [MatchEventGoal], { nullable : true })
     goal: MatchEventGoal[]
+}
+
+@ObjectType()
+export class MatchEventQualifierModel {
+    @Field({nullable: true})
+    id: number;
+
+    @Field({nullable: true})
+    qualifierId: number;
+
+    @Field({nullable: true})
+    value: string;
+}
+
+@ObjectType()
+export class MatchEventEventModel {
+    @Field({nullable: true})
+    id: number;
+
+    @Field({nullable: true})
+    eventId: number;
+
+    @Field(() => Int, {nullable: true})
+    typeId: number;
+
+    @Field(() => Int, {nullable: true})
+    periodId: number;
+
+    @Field(() => Int, {nullable: true})
+    timeMin: number;
+
+    @Field(() => Int, {nullable: true})
+    timeSec: number;
+
+    @Field({nullable: true})
+    contestantId: string;
+
+    @Field({nullable: true})
+    playerId: string;
+
+    @Field(() => String, {nullable: true})
+    playerName: string;
+
+    @Field({nullable: true})
+    outcome: number;
+
+    @Field(() => Float, {nullable: true})
+    x: number;
+
+    @Field(() => Float, {nullable: true})
+    y: number;
+
+    @Field({nullable: true})
+    timeStamp: string;
+
+    @Field({nullable: true})
+    lastModified: string;
+
+    @Field(() => [MatchEventQualifierModel], {nullable: true})
+    qualifier: MatchEventQualifierModel[];
+}
+
+@ObjectType()
+export class MatchEventMA3Model{
+
+    @Field({nullable: true})
+    description: string;
+
+    @Field(()=> [MatchContestantModel], { nullable : true })
+    contestant: MatchContestantModel[]
+
+    @Field(()=> [MatchEventEventModel], { nullable : true })
+    event: MatchEventEventModel[]
 }

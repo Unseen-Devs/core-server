@@ -4,6 +4,7 @@ import axios from 'axios';
 import { TournamentCalendarModel } from '../entities/opta_model.entity';
 import { TournamentScheduleDetailModel } from '../entities/tournament.entity';
 import { FixturesAndResultsArgs } from '../dto/opta.args';
+import { forEach } from 'lodash';
 
 const OPTA_OUTLET_AUTH_KEY = process.env.OPTA_OUTLET_AUTH_KEY;
 const OPTA_BASE_URL = process.env.OPTA_BASE_URL;
@@ -93,13 +94,57 @@ export class OptaService {
         status: status,
         "mt.mDt": mtMDt,//[YYYY-MM-DDTHH:MM:SSZ TO YYYY-MM-DDTHH:MM:SSZ]
       }
-    }).then((response) => {
+    }).then(async (response) => {
       if(response.status !== 200){
         throw new ApolloError('Get Fixtures and Results Fail', 'get_tournament_schedule_failed');
       }
       const data = response.data.match;
+      // Touch
+      const typeIds = '1,2,3,4,7,8,10,11,12,13,14,15,16,41,42,50,54,61,73,74';
+      const prsn = '4jyrztlaueae7eg18kuvxa489';
+      const promises: Promise<any>[] = [];
+      data.forEach(d => {
+        const urlTouch = `${OPTA_BASE_URL}/matchevent/${OPTA_OUTLET_AUTH_KEY}/${d.matchInfo.id}`;
+        
+        if (d.liveData.goal && d.liveData.goal.map(o => {
+          if(prsn === o.assistPlayerId || prsn === o.scorerId)
+          return prsn;
+        }).includes(prsn)) {
+          promises.push(axios.get(urlTouch, {
+              params: {
+                _rt: "b",
+                _fmt: "json",
+                type: '1,2,3,4,7,8,10,11,12,13,14,15,16,41,42,50,54,61,73,74',
+                prsn,
+              }
+            }));
+        }
+      });
+      const dataEvents: any[] = [];
+      await Promise.all(promises).then(res => {
+        res.forEach(r => {
+          if(r.data)
+          dataEvents.push({
+            id: r.data.matchInfo.id,
+            event: r.data.liveData.event.filter(f => ([1,2,3,7,8,10,11,12,13,14,15,16,41,42,50,54,61,73,74].includes(f.typeId) || (f.typeId == 4 && f.outcome == 1)))
+          });
+        });
+      }).catch(err => {console.log(err)})
+
       const rs = data.map(d => {
-        return {
+        const event = dataEvents.find(f => (f.id == d.matchInfo.id));
+        if(d.liveData.goal)
+        d.liveData.goal.map(e => {
+          if (event) {
+            const events: any[] = event.event;
+            e.assistPlayerTouch = events.findIndex(f => (f.assist == 1 && f.playerId == e.assistPlayerId)) + 1;
+
+            e.scorerPlayerTouch = events.findIndex(f => (f.typeId == 16 && f.playerId == e.scorerId)) + 1;
+          }
+          return e;
+        })
+
+        const obj =  {
           id: d.matchInfo.id,
           date: d.matchInfo.date,
           time: d.matchInfo.time,
@@ -107,7 +152,9 @@ export class OptaService {
           matchStatus: d.liveData.matchDetails.matchStatus,
           scores: d.liveData.matchDetails.scores,
           goal: d.liveData.goal,
-        }
+        };
+
+        return obj;
       })
       return { match: rs };
 
@@ -164,19 +211,30 @@ export class OptaService {
       if(response.status !== 200){
         throw new ApolloError('Get Match Events MA3 Fail', 'get_match_event_ma3_failed');
       }
-      const data = response.data.match;
-      const rs = data.map(d => {
-        return {
-          id: d.matchInfo.id,
-          date: d.matchInfo.date,
-          time: d.matchInfo.time,
-          contestant: d.matchInfo.contestant,
-          matchStatus: d.liveData.matchDetails.matchStatus,
-          scores: d.liveData.matchDetails.scores,
-          event: d.liveData.event,
-        }
-      })
-      return { match: rs };
+      const d = response.data;
+
+      return {
+        id: d.matchInfo.id,
+        date: d.matchInfo.date,
+        time: d.matchInfo.time,
+        contestant: d.matchInfo.contestant,
+        matchStatus: d.liveData.matchDetails.matchStatus,
+        scores: d.liveData.matchDetails.scores,
+        event: d.liveData.event,
+      }
+      // const rs = data.map(d => {
+      //   console.log(d);
+      //   return {
+      //     id: d.matchInfo.id,
+      //     date: d.matchInfo.date,
+      //     time: d.matchInfo.time,
+      //     contestant: d.matchInfo.contestant,
+      //     matchStatus: d.liveData.matchDetails.matchStatus,
+      //     scores: d.liveData.matchDetails.scores,
+      //     event: d.liveData.event,
+      //   }
+      // })
+      // return { match: rs };
     });
   } catch (error) {
     console.log('error', error);

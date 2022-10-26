@@ -81,8 +81,10 @@ type GoalModel {
   type: String
   scorerId: String
   scorerName: String
+  scorerPlayerTouch: Float
   assistPlayerId: String
   assistPlayerName: String
+  assistPlayerTouch: Float
   optaEventId: String
   homeScore: Float
   awayScore: Float
@@ -187,9 +189,40 @@ type MatchEventModel {
   goal: [MatchEventGoal!]
 }
 
+type MatchEventQualifierModel {
+  id: Float
+  qualifierId: Float
+  value: String
+}
+
+type MatchEventEventModel {
+  id: Float
+  eventId: Float
+  typeId: Int
+  periodId: Int
+  timeMin: Int
+  timeSec: Int
+  contestantId: String
+  playerId: String
+  playerName: String
+  outcome: Float
+  x: Float
+  y: Float
+  timeStamp: String
+  lastModified: String
+  qualifier: [MatchEventQualifierModel!]
+}
+
+type MatchEventMA3Model {
+  description: String
+  contestant: [MatchContestantModel!]
+  event: [MatchEventEventModel!]
+}
+
 type Query {
   getTournamentCalendar: TournamentCalendarModel
   getTournamentSchedule: TournamentScheduleModel
   getFixturesAndResults(status: FixtureStatus!, mtMDt: String!): FixturesModelAndResultsModel
   getMatchEvents(fixtureId: String!): MatchEventModel
+  getMatchEventsMA3: MatchEventMA3Model
 }
