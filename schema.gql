@@ -219,10 +219,58 @@ type MatchEventMA3Model {
   event: [MatchEventEventModel!]
 }
 
+"""Player"""
+type Player implements Node {
+  id: ID!
+  walletAddress: String
+  rewardCode: Float
+  playerId: String
+  contestantId: String
+  firstName: String
+  lastName: String
+  shortFirstName: String
+  shortLastName: String
+  shirtPlayer: String
+  matchName: String
+  shirtNumber: Int
+  position: String
+  positionSide: String
+  formationPlace: String
+  touch: Float
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type PlayerConnection {
+  items: [Player!]
+  meta: BasePaginationMeta!
+}
+
+"""Reward"""
+type Reward implements Node {
+  id: ID!
+  walletAddress: ID!
+  rewardAmount: Float
+  rewardType: RewardType
+}
+
+enum RewardType {
+  Touch
+}
+
 type Query {
   getTournamentCalendar: TournamentCalendarModel
   getTournamentSchedule: TournamentScheduleModel
   getFixturesAndResults(status: FixtureStatus!, mtMDt: String!): FixturesModelAndResultsModel
   getMatchEvents(fixtureId: String!): MatchEventModel
   getMatchEventsMA3: MatchEventMA3Model
+  getPlayersByWallet(limit: Int = 15, page: Int = 1, filters: [JSONObject!], walletAddress: String): PlayerConnection
+  getPlayer(id: String!): Player
+  getPlayerByWallet(walletAddress: String!, id: String!): Player
+  getRewardByWalledAndType(walletAddress: String!, rewardType: RewardType): Reward!
 }
+
+"""
+The `JSONObject` scalar type represents JSON objects as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
+"""
+scalar JSONObject

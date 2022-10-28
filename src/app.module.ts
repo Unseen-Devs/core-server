@@ -10,6 +10,8 @@ import { EventsModule } from './modules/events/events.module';
 import { OptaModule } from './modules/opta/opta.module';
 import { SendGridTransport } from './transport/nodemailer-sendgrid';
 import { typeORMConfig } from './typeorm.config';
+import { PlayerModule } from './modules/player/player.module';
+import { RewardModule } from './modules/reward/reward.module';
 
 @Module({
   imports: [
@@ -34,6 +36,8 @@ import { typeORMConfig } from './typeorm.config';
     EventsModule,
     CommonModule,
     OptaModule,
+    PlayerModule,
+    RewardModule,
   ],
 })
 export class AppModule implements NestModule {

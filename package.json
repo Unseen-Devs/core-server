@@ -40,6 +40,7 @@
     "@nestjs/cqrs": "^8.0.5",
     "@nestjs/graphql": "^10.0.16",
     "@nestjs/jwt": "^8.0.1",
+    "@nestjs/mapped-types": "*",
     "@nestjs/microservices": "^8.4.7",
     "@nestjs/passport": "^8.2.2",
     "@nestjs/platform-express": "^8.4.7",
