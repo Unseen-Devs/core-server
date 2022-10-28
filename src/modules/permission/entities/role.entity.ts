@@ -32,20 +32,20 @@ export class Role extends BaseEntity implements Node {
   @UpdateDateColumn()
   updatedAt: Date;
 
-  @ManyToMany(() => User, (user) => user.permissions, {
-    cascade: true,
-  })
-  @JoinTable({
-    name: 'users_roles',
-    joinColumn: {
-      name: 'roleId',
-      referencedColumnName: 'id',
-    },
-    inverseJoinColumn: {
-      name: 'userId',
-      referencedColumnName: 'id',
-    },
-  })
+  // @ManyToMany(() => User, (user) => user.permissions, {
+  //   cascade: true,
+  // })
+  // @JoinTable({
+  //   name: 'users_roles',
+  //   joinColumn: {
+  //     name: 'roleId',
+  //     referencedColumnName: 'id',
+  //   },
+  //   inverseJoinColumn: {
+  //     name: 'userId',
+  //     referencedColumnName: 'id',
+  //   },
+  // })
   users: User[];
 
   constructor(data: DeepPartial<Role>) {

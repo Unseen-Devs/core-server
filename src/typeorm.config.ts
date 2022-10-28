@@ -2,6 +2,7 @@ import { TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { Opta } from './modules/opta/entities/opta.entity';
 import { PlayerEntity } from './modules/player/entities/player.entity';
 import { RewardEntity } from './modules/reward/entities/reward.entity';
+import { User } from './modules/users/entities/users.entity';
 
 export const typeORMConfig: TypeOrmModuleOptions = {
   // type: 'postgres',
@@ -13,7 +14,7 @@ export const typeORMConfig: TypeOrmModuleOptions = {
   password: process.env.DATABASE_PASSWORD,
   database: process.env.DATABASE_NAME,
   synchronize: process.env.DATABASE_SYNC === 'true',
-  entities: [Opta, PlayerEntity, RewardEntity],
+  entities: [Opta, User, PlayerEntity, RewardEntity],
   logging: process.env.DATABASE_LOGGING === 'true',
   // useUTC: true,
 };

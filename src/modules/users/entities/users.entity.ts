@@ -2,17 +2,16 @@ import {
   Entity,
   Column,
   DeepPartial,
-  ManyToMany,
   CreateDateColumn,
   UpdateDateColumn,
-  Index,
   BaseEntity,
-  RelationId,
+  ManyToMany,
+  JoinTable,
 } from 'typeorm';
-import { ObjectType, Field, Int, HideField, ID } from '@nestjs/graphql';
+import { ObjectType, Field, ID } from '@nestjs/graphql';
 import { Node, PaginationBase } from 'src/graphql/types/common.interface.entity';
 import { snowflake } from 'src/helpers/common';
-import { Role } from 'src/modules/permission/entities/role.entity';
+import { PlayerEntity } from 'src/modules/player/entities/player.entity';
 
 @ObjectType({
   implements: [Node],
@@ -28,62 +27,23 @@ export class User extends BaseEntity implements Node {
   })
   id: string;
 
-  @Column({ length: 100, unique: true })
-  @Index({
-    unique: true,
-  })
-  email: string;
-
-  @HideField()
+  @Field({nullable: true})
   @Column()
-  password: string;
+  walletAddress: string;
 
-  @HideField()
+  @Field({nullable: true})
   @Column()
-  passwordSalt: string;
-
-  @Field({
-    nullable: true,
-  })
-  @Column({ nullable: true })
-  @Index({ fulltext: true })
-  firstName: string;
-
-  @Column({ nullable: true })
-  @Index({ fulltext: true })
-  lastName?: string;
-
-  @Column({ nullable: true })
-  avatar?: string;
-
-  @Field(() => Int)
-  @Column('int', { nullable: true })
-  age?: number;
-
-  @Column({
-    default: false,
-  })
-  @Index()
-  isActive: boolean;
-
-  @Column({
-    default: false,
-  })
-  isSuperAdmin: boolean;
-
-  @HideField()
-  @RelationId((user: User) => user.permissions)
-  permissionIds: string[];
-
-  @HideField()
-  @ManyToMany(() => Role, (role) => role.users)
-  permissions: Role[];
+  token: string;
 
   @CreateDateColumn()
   createdAt: Date;
 
   @UpdateDateColumn()
   updatedAt: Date;
+
+
+  @ManyToMany(() => PlayerEntity, (player) => player.users)
+  players: PlayerEntity[];
 
   constructor(partial: DeepPartial<User>) {
     super();

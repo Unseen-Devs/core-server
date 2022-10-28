@@ -12,6 +12,7 @@ import { SendGridTransport } from './transport/nodemailer-sendgrid';
 import { typeORMConfig } from './typeorm.config';
 import { PlayerModule } from './modules/player/player.module';
 import { RewardModule } from './modules/reward/reward.module';
+import { UsersModule } from './modules/users/users.module';
 
 @Module({
   imports: [
@@ -36,6 +37,7 @@ import { RewardModule } from './modules/reward/reward.module';
     EventsModule,
     CommonModule,
     OptaModule,
+    UsersModule,
     PlayerModule,
     RewardModule,
   ],

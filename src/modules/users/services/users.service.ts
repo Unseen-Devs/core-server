@@ -40,19 +40,4 @@ export class UsersService {
     builder = builder.orderBy('users.createdAt', 'DESC');
     return this.userRepository.paginateQueryBuilder(builder, args);
   }
-
-  async login(username: string, password: string) {
-    const user = await this.userRepository.findOneOrFail({
-      where: { email: username },
-    });
-    if (!user.isActive) {
-      throw new UserInputError('User is not activate');
-    }
-    const check = bcrypt.compareSync(password, user.password);
-    if (check) {
-      return user;
-    } else {
-      return false;
-    }
-  }
 }

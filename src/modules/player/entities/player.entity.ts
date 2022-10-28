@@ -1,7 +1,8 @@
 import { ObjectType, Field, Int, ID } from '@nestjs/graphql';
 import { Node, PaginationBase } from 'src/graphql/types/common.interface.entity';
 import { snowflake } from 'src/helpers/common';
-import { Column, CreateDateColumn, DeepPartial, Entity, UpdateDateColumn, BaseEntity } from 'typeorm';
+import { User } from 'src/modules/users/entities/users.entity';
+import { Column, CreateDateColumn, DeepPartial, Entity, UpdateDateColumn, BaseEntity, ManyToMany, JoinTable } from 'typeorm';
 
 @ObjectType('Player', {
   description: 'Player',
@@ -84,6 +85,21 @@ export class PlayerEntity extends BaseEntity implements Node {
 
   @UpdateDateColumn()
   updatedAt: Date;
+
+  @ManyToMany(() => User, (user) => user.players)
+  @JoinTable({
+    name: 'users_players',
+    joinColumn: {
+      name: 'playerId',
+      referencedColumnName: 'id',
+    },
+    inverseJoinColumn: {
+      name: 'userId',
+      referencedColumnName: 'id',
+    },
+  })
+  users: User[];
+  
   constructor(data: DeepPartial<PlayerEntity>) {
     super();
     Object.assign(this, { id: snowflake.nextId(), ...data });

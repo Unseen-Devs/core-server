@@ -4,10 +4,11 @@ import { PlayerRepository } from '../repositories/player.repository';
 import { PlayerArgs } from '../dto/player.args';
 import { PlayerEntity } from '../entities/player.entity';
 import { getConnection } from 'typeorm';
+import { UserRepository } from '../../users/repositories/users.repository';
 
 @Injectable()
 export class PlayerService {
-  constructor(private readonly playerRepository: PlayerRepository){}
+  constructor(private readonly userRepository: UserRepository, private readonly playerRepository: PlayerRepository){}
 
   async findOne(id: string) {
     try {
@@ -20,10 +21,15 @@ export class PlayerService {
 
   async findOneByWallet(walletAddress: string, id: string) {
     try {
+
+
       return await this.playerRepository.findOne({
+        // relations: ['users'],
         where: {
           id,
-          walletAddress
+          // users: {
+          //   walletAddress
+          // }
         }
       });  
     } catch (error) {
