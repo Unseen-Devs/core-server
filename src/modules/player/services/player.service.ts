@@ -22,16 +22,32 @@ export class PlayerService {
   async findOneByWallet(walletAddress: string, id: string) {
     try {
 
+      const data = await this.playerRepository.createQueryBuilder('player')
+        .leftJoinAndSelect(
+          'player.users',
+          'user')
+        .where('player.id = :id', { id })
+        .where('user.walletAddress = :walletAddress', { walletAddress })
+        .getOne();
+        
+        return data;
+    } catch (error) {
+      console.log('error', error);
+      throw new ApolloError('Get Player Fail', 'get_player_failed');
+    }
+  }
 
-      return await this.playerRepository.findOne({
-        // relations: ['users'],
-        where: {
-          id,
-          // users: {
-          //   walletAddress
-          // }
-        }
-      });  
+  async findByWallet(walletAddress: string) {
+    try {
+
+      const data = await this.playerRepository.createQueryBuilder('player')
+        .leftJoinAndSelect(
+          'player.users',
+          'user')
+        .where('user.walletAddress = :walletAddress', { walletAddress })
+        .getMany();
+        
+        return data;
     } catch (error) {
       console.log('error', error);
       throw new ApolloError('Get Player Fail', 'get_player_failed');
@@ -54,8 +70,23 @@ export class PlayerService {
   }
 
   async generatePlayer() {
-    const players: PlayerEntity[] = [
-      
+    const players: any[] = [
+      {
+        rewardCode: 0,
+        playerId: '',
+        contestantId: '',
+        firstName: '',
+        lastName: '',
+        shortFirstName: '',
+        shortLastName: '',
+        shirtPlayer: '',
+        matchName: '',
+        shirtNumber: '',
+        position: '',
+        positionSide: '',
+        formationPlace: '',
+        touch: 0
+      }
     ];
 
     await getConnection().transaction(async transactionalEntityManager => {

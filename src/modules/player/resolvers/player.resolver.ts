@@ -32,4 +32,15 @@ export class PlayerResolver {
   ) {
     return await this.playerService.findOneByWallet(walletAddress, id);
   }
+
+
+  @Query(() => [PlayerEntity], {
+    name: 'getPlayersByWallet',
+    nullable: true
+  })
+  async findByWallet(
+    @Args('walletAddress', {type: () => String}) walletAddress: string
+  ) {
+    return await this.playerService.findByWallet(walletAddress);
+  }
 }

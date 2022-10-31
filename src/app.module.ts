@@ -34,7 +34,7 @@ import { UsersModule } from './modules/users/users.module';
         },
       },
     }),
-    EventsModule,
+    // EventsModule,
     CommonModule,
     OptaModule,
     UsersModule,

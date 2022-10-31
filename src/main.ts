@@ -72,7 +72,7 @@ async function bootstrap() {
   useContainer(app.select(AppModule), { fallbackOnErrors: true });
 
   // WebSocket Adapter
-  app.useWebSocketAdapter(new WsAdapter(app));
+  // app.useWebSocketAdapter(new WsAdapter(app));
 
   await app.listen(PORT);
   console.info(`Application is running on: ${await app.getUrl()}`);

@@ -282,7 +282,7 @@ type Query {
 
   """Require `LIST_USER` permission"""
   users(limit: Int = 15, page: Int = 1, filters: [JSONObject!], sort: SortInput, s: String): UserConnection
-  getPlayersByWallet(limit: Int = 15, page: Int = 1, filters: [JSONObject!], walletAddress: String): PlayerConnection
+  getPlayersByWallet(walletAddress: String!): [Player!]
   getPlayer(id: String!): Player
   getPlayerByWallet(walletAddress: String!, id: String!): Player
   getRewardByWalledAndType(walletAddress: String!, rewardType: RewardType): Reward!
