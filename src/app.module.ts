@@ -13,6 +13,7 @@ import { typeORMConfig } from './typeorm.config';
 import { PlayerModule } from './modules/player/player.module';
 import { RewardModule } from './modules/reward/reward.module';
 import { UsersModule } from './modules/users/users.module';
+import { PlayerNftModule } from './modules/player_nft/player_nft.module';
 
 @Module({
   imports: [
@@ -39,6 +40,7 @@ import { UsersModule } from './modules/users/users.module';
     OptaModule,
     UsersModule,
     PlayerModule,
+    PlayerNftModule,
     RewardModule,
   ],
 })

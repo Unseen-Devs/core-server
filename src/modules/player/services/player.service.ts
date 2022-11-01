@@ -24,10 +24,10 @@ export class PlayerService {
 
       const data = await this.playerRepository.createQueryBuilder('player')
         .leftJoinAndSelect(
-          'player.users',
-          'user')
+          'player.nft',
+          'nft')
         .where('player.id = :id', { id })
-        .where('user.walletAddress = :walletAddress', { walletAddress })
+        .where('nft.walletAddress = :walletAddress', { walletAddress })
         .getOne();
         
         return data;
@@ -42,9 +42,9 @@ export class PlayerService {
 
       const data = await this.playerRepository.createQueryBuilder('player')
         .leftJoinAndSelect(
-          'player.users',
-          'user')
-        .where('user.walletAddress = :walletAddress', { walletAddress })
+          'player.nft',
+          'nft')
+        .where('nft.walletAddress = :walletAddress', { walletAddress })
         .getMany();
         
         return data;
