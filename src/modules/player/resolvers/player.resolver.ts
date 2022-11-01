@@ -11,7 +11,7 @@ export class PlayerResolver {
 
   @Query(() => PlayerConnection, {
     nullable: true,
-    name: 'getPlayersByWallet',
+    name: 'getPlayers',
   })
   async getPlayersByWallet(@Args() args: PlayerArgs) {
     return await this.playerService.pagination(args);
