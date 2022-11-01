@@ -219,6 +219,7 @@ type MatchEventMA3Model {
   event: [MatchEventEventModel!]
 }
 
+<<<<<<< HEAD
 type User implements Node {
   id: ID!
   walletAddress: String
@@ -244,6 +245,8 @@ type PlayerNft implements Node {
   player: Player!
 }
 
+=======
+>>>>>>> develop
 """Player"""
 type Player implements Node {
   id: ID!
@@ -263,7 +266,10 @@ type Player implements Node {
   touch: Float
   createdAt: DateTime!
   updatedAt: DateTime!
+<<<<<<< HEAD
   nft: PlayerNft!
+=======
+>>>>>>> develop
 }
 
 enum PlayerTier {
@@ -286,6 +292,19 @@ type Reward implements Node {
 
 enum RewardType {
   Touch
+}
+
+type User implements Node {
+  id: ID!
+  walletAddress: String
+  nonce: String
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type UserConnection {
+  items: [User!]
+  meta: BasePaginationMeta!
 }
 
 type Query {
@@ -312,4 +331,13 @@ scalar JSONObject
 input SortInput {
   field: String!
   direction: String
+}
+
+type Mutation {
+  """Create user by wallet address"""
+  createUser(input: NewUserWalletInput!): User
+}
+
+input NewUserWalletInput {
+  walletAddress: String!
 }

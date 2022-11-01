@@ -29,13 +29,15 @@ export class User extends BaseEntity implements Node {
   })
   id: string;
 
-  @Field({nullable: true})
+  @Field({ nullable: true })
   @Column()
   walletAddress: string;
 
-  @Field({nullable: true})
-  @Column()
-  token: string;
+  @Field({ nullable: true })
+  @Column('bigint', {
+    unsigned: true,
+  }) 
+  nonce: string ;
 
   @CreateDateColumn()
   createdAt: Date;
@@ -45,8 +47,6 @@ export class User extends BaseEntity implements Node {
 
 @OneToMany(() => PlayerNftEntity, player => player.user)
 players: PlayerNftEntity[];
-  // @ManyToMany(() => PlayerEntity, (player) => player.users)
-  // players: PlayerEntity[];
 
   constructor(partial: DeepPartial<User>) {
     super();

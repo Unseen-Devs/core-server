@@ -1,10 +1,11 @@
-import { Injectable } from '@nestjs/common';
-import { FindManyOptions, FindOneOptions, In } from 'typeorm';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { FindManyOptions, FindOneOptions, In, RemoveOptions, SaveOptions } from 'typeorm';
 import { UserRepository } from '../repositories/users.repository';
 import { User } from '../entities/users.entity';
 import bcrypt from 'bcryptjs';
 import { PaginationArgs } from 'src/graphql/types/common.args';
 import { UserInputError } from 'apollo-server-errors';
+import { genNonce } from 'src/helpers/common';
 
 @Injectable()
 export class UsersService {
@@ -39,5 +40,28 @@ export class UsersService {
 
     builder = builder.orderBy('users.createdAt', 'DESC');
     return this.userRepository.paginateQueryBuilder(builder, args);
+  }
+
+  async loginWallet(walletAddress: string) {
+    const user = await this.userRepository.findOne({
+      where: { walletAddress: walletAddress.toLocaleLowerCase() },
+    });
+
+    if (!user) {
+      let newUser: User | any = {
+        walletAddress: '',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        nonce: 0,
+      };
+      newUser.nonce = genNonce();
+      newUser.walletAddress = walletAddress.toLocaleLowerCase();
+
+      const user = this.userRepository.create(newUser);
+      return this.userRepository.save(user);
+    }
+    user.nonce = genNonce().toString();
+    this.userRepository.save(user);
+    return user;
   }
 }

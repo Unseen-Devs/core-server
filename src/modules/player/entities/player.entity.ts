@@ -87,20 +87,6 @@ export class PlayerEntity extends BaseEntity implements Node {
 
   @OneToMany(() => PlayerNftEntity, nft => nft.player)
   nft: PlayerNftEntity
-
-  // @ManyToMany(() => User, (user) => user.players)
-  // @JoinTable({
-  //   name: 'users_players',
-  //   joinColumn: {
-  //     name: 'playerId',
-  //     referencedColumnName: 'id',
-  //   },
-  //   inverseJoinColumn: {
-  //     name: 'userId',
-  //     referencedColumnName: 'id',
-  //   },
-  // })
-  // users: User[];
   
   constructor(data: DeepPartial<PlayerEntity>) {
     super();
