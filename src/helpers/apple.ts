@@ -42,6 +42,7 @@ const generateSecret = () => {
     );
   });
 };
+
 export const getAppleUser = async (token: string) => {
   const secret = await generateSecret();
   if (!secret) {

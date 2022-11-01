@@ -3,6 +3,9 @@ import { FindManyOptions, FindOneOptions, In, RemoveOptions, SaveOptions } from 
 import { UserRepository } from '../repositories/users.repository';
 import { User } from '../entities/users.entity';
 import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
+import fs from 'fs';
+
 import { PaginationArgs } from 'src/graphql/types/common.args';
 import { UserInputError } from 'apollo-server-errors';
 import { genNonce } from 'src/helpers/common';
@@ -44,19 +47,23 @@ export class UsersService {
 
   async loginWallet(walletAddress: string) {
     const user = await this.userRepository.findOne({
-      where: { walletAddress: walletAddress.toLocaleLowerCase() },
+      where: { walletAddress: walletAddress.toLowerCase() },
     });
+
+    const accesstoken = await jwt.sign(
+      { iat: Math.floor(Date.now() / 1000), exp: Math.floor(Date.now() / 1000) + 86400 * 180 },
+      process.env.JWT_SECRET!,
+      // { algorithm: 'ES256' },,
+    );
 
     if (!user) {
       let newUser: User | any = {
         walletAddress: '',
-        createdAt: new Date(),
-        updatedAt: new Date(),
         nonce: 0,
+        accesstoken,
       };
       newUser.nonce = genNonce();
-      newUser.walletAddress = walletAddress.toLocaleLowerCase();
-
+      newUser.walletAddress = walletAddress.toLowerCase();
       const user = this.userRepository.create(newUser);
       return this.userRepository.save(user);
     }
