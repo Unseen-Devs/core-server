@@ -25,5 +25,17 @@ export class NewUserInput {
   roles?: string[];
 }
 
+
+@InputType()
+export class NewUserWalletInput {
+  // @MinLength(3)
+  // @MaxLength(50)
+  // @Validate(UniqueEmail, {
+  //   message: 'WalletAddress must be unique',
+  // })
+  walletAddress: string;
+}
+
+
 @InputType()
 export class UpdateUserInput extends PartialType(OmitType(NewUserInput, ['email'])) {}
