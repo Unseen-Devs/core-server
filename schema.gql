@@ -236,7 +236,6 @@ type UserConnection {
 """Player"""
 type Player implements Node {
   id: ID!
-  walletAddress: String
   rewardCode: Float
   playerId: String
   contestantId: String
@@ -246,6 +245,7 @@ type Player implements Node {
   shortLastName: String
   shirtPlayer: String
   matchName: String
+  type: PlayerTier
   shirtNumber: Int
   position: String
   positionSide: String
@@ -254,6 +254,11 @@ type Player implements Node {
   createdAt: DateTime!
   updatedAt: DateTime!
   users: [User!]!
+}
+
+enum PlayerTier {
+  TIER1
+  TIER2
 }
 
 type PlayerConnection {
@@ -285,6 +290,7 @@ type Query {
   getPlayersByWallet(walletAddress: String!): [Player!]
   getPlayer(id: String!): Player
   getPlayerByWallet(walletAddress: String!, id: String!): Player
+  generatePlayer: [Player!]
   getRewardByWalledAndType(walletAddress: String!, rewardType: RewardType): Reward!
 }
 

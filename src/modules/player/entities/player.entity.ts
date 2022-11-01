@@ -3,6 +3,7 @@ import { Node, PaginationBase } from 'src/graphql/types/common.interface.entity'
 import { snowflake } from 'src/helpers/common';
 import { User } from 'src/modules/users/entities/users.entity';
 import { Column, CreateDateColumn, DeepPartial, Entity, UpdateDateColumn, BaseEntity, ManyToMany, JoinTable } from 'typeorm';
+import { PlayerTierEnum } from '../enums/player.enum';
 
 @ObjectType('Player', {
   description: 'Player',
@@ -18,10 +19,6 @@ export class PlayerEntity extends BaseEntity implements Node {
     unsigned: true,
   })
   id: string;
-
-  @Field({nullable: true})
-  @Column()
-  walletAddress: string;
 
   @Field({nullable: true})
   rewardCode: number;
@@ -57,6 +54,10 @@ export class PlayerEntity extends BaseEntity implements Node {
   @Field({nullable: true})
   @Column({length: 100})
   matchName: string;
+
+  @Field(() =>PlayerTierEnum, {nullable: true})
+  @Column()
+  type: PlayerTierEnum;
 
   @Field(() => Int, {nullable: true})
   @Column({

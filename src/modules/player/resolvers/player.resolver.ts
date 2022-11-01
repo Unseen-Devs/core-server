@@ -43,4 +43,12 @@ export class PlayerResolver {
   ) {
     return await this.playerService.findByWallet(walletAddress);
   }
+
+  @Query(() => [PlayerEntity], {
+    name: 'generatePlayer',
+    nullable: true
+  })
+  async generatePlayer() {
+    return this.playerService.generatePlayer();
+  }
 }
