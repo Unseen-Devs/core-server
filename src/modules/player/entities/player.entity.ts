@@ -2,8 +2,9 @@ import { ObjectType, Field, Int, ID } from '@nestjs/graphql';
 import { Node, PaginationBase } from 'src/graphql/types/common.interface.entity';
 import { snowflake } from 'src/helpers/common';
 import { User } from 'src/modules/users/entities/users.entity';
-import { Column, CreateDateColumn, DeepPartial, Entity, UpdateDateColumn, BaseEntity, ManyToMany, JoinTable } from 'typeorm';
+import { Column, CreateDateColumn, DeepPartial, Entity, UpdateDateColumn, BaseEntity, ManyToMany, JoinTable, OneToMany } from 'typeorm';
 import { PlayerTierEnum } from '../enums/player.enum';
+import { PlayerNftEntity } from '../../player_nft/entities/player-nft.entity';
 
 @ObjectType('Player', {
   description: 'Player',
@@ -19,9 +20,6 @@ export class PlayerEntity extends BaseEntity implements Node {
     unsigned: true,
   })
   id: string;
-
-  @Field({nullable: true})
-  rewardCode: number;
   
   @Field({nullable: true})
   @Column({length: 100})
@@ -87,19 +85,22 @@ export class PlayerEntity extends BaseEntity implements Node {
   @UpdateDateColumn()
   updatedAt: Date;
 
-  @ManyToMany(() => User, (user) => user.players)
-  @JoinTable({
-    name: 'users_players',
-    joinColumn: {
-      name: 'playerId',
-      referencedColumnName: 'id',
-    },
-    inverseJoinColumn: {
-      name: 'userId',
-      referencedColumnName: 'id',
-    },
-  })
-  users: User[];
+  @OneToMany(() => PlayerNftEntity, nft => nft.player)
+  nft: PlayerNftEntity
+
+  // @ManyToMany(() => User, (user) => user.players)
+  // @JoinTable({
+  //   name: 'users_players',
+  //   joinColumn: {
+  //     name: 'playerId',
+  //     referencedColumnName: 'id',
+  //   },
+  //   inverseJoinColumn: {
+  //     name: 'userId',
+  //     referencedColumnName: 'id',
+  //   },
+  // })
+  // users: User[];
   
   constructor(data: DeepPartial<PlayerEntity>) {
     super();

@@ -225,7 +225,7 @@ type User implements Node {
   token: String
   createdAt: DateTime!
   updatedAt: DateTime!
-  players: [Player!]!
+  players: [PlayerNft!]!
 }
 
 type UserConnection {
@@ -233,10 +233,20 @@ type UserConnection {
   meta: BasePaginationMeta!
 }
 
+"""PlayerNft"""
+type PlayerNft implements Node {
+  id: ID!
+  tokenId: String
+  rewardCode: Float
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  user: User!
+  player: Player!
+}
+
 """Player"""
 type Player implements Node {
   id: ID!
-  rewardCode: Float
   playerId: String
   contestantId: String
   firstName: String
@@ -253,7 +263,7 @@ type Player implements Node {
   touch: Float
   createdAt: DateTime!
   updatedAt: DateTime!
-  users: [User!]!
+  nft: PlayerNft!
 }
 
 enum PlayerTier {
