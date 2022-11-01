@@ -36,8 +36,12 @@ export class User extends BaseEntity implements Node {
   @Field({ nullable: true })
   @Column('bigint', {
     unsigned: true,
-  }) 
-  nonce: string ;
+  })
+  nonce: string;
+
+  @Field({ nullable: true })
+  @Column()
+  accesstoken: string;
 
   @CreateDateColumn()
   createdAt: Date;

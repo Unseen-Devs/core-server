@@ -298,6 +298,7 @@ type User implements Node {
   id: ID!
   walletAddress: String
   nonce: String
+  accesstoken: String
   createdAt: DateTime!
   updatedAt: DateTime!
 }
