@@ -219,11 +219,11 @@ type MatchEventMA3Model {
   event: [MatchEventEventModel!]
 }
 
-<<<<<<< HEAD
 type User implements Node {
   id: ID!
   walletAddress: String
-  token: String
+  nonce: String
+  accesstoken: String
   createdAt: DateTime!
   updatedAt: DateTime!
   players: [PlayerNft!]!
@@ -245,8 +245,6 @@ type PlayerNft implements Node {
   player: Player!
 }
 
-=======
->>>>>>> develop
 """Player"""
 type Player implements Node {
   id: ID!
@@ -266,10 +264,7 @@ type Player implements Node {
   touch: Float
   createdAt: DateTime!
   updatedAt: DateTime!
-<<<<<<< HEAD
   nft: PlayerNft!
-=======
->>>>>>> develop
 }
 
 enum PlayerTier {
@@ -294,20 +289,6 @@ enum RewardType {
   Touch
 }
 
-type User implements Node {
-  id: ID!
-  walletAddress: String
-  nonce: String
-  accesstoken: String
-  createdAt: DateTime!
-  updatedAt: DateTime!
-}
-
-type UserConnection {
-  items: [User!]
-  meta: BasePaginationMeta!
-}
-
 type Query {
   getTournamentCalendar: TournamentCalendarModel
   getTournamentSchedule: TournamentScheduleModel
@@ -317,9 +298,10 @@ type Query {
 
   """Require `LIST_USER` permission"""
   users(limit: Int = 15, page: Int = 1, filters: [JSONObject!], sort: SortInput, s: String): UserConnection
-  getPlayersByWallet(walletAddress: String!): [Player!]
+  getPlayers(limit: Int = 15, page: Int = 1, filters: [JSONObject!], walletAddress: String): PlayerConnection
   getPlayer(id: String!): Player
   getPlayerByWallet(walletAddress: String!, id: String!): Player
+  getPlayersByWallet(walletAddress: String!): [Player!]
   generatePlayer: [Player!]
   getRewardByWalledAndType(walletAddress: String!, rewardType: RewardType): Reward!
 }

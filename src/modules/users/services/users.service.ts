@@ -51,9 +51,9 @@ export class UsersService {
     });
 
     const accesstoken = await jwt.sign(
-      { iat: Math.floor(Date.now() / 1000), exp: Math.floor(Date.now() / 1000) + 86400 * 180 },
+      { iat: Math.floor(Date.now() / 1000), exp: Math.floor(Date.now() / 1000) + 86400 * 180, walletAddress },
       process.env.JWT_SECRET!,
-      // { algorithm: 'ES256' },,
+      // { algorithm: 'ES256' },
     );
 
     if (!user) {
