@@ -11,7 +11,7 @@ import {
 import { ObjectType, Field, ID } from '@nestjs/graphql';
 import { Node, PaginationBase } from 'src/graphql/types/common.interface.entity';
 import { snowflake } from 'src/helpers/common';
-import { PlayerEntity } from 'src/modules/player/entities/player.entity';
+// import { PlayerEntity } from 'src/modules/player/entities/player.entity';
 
 @ObjectType({
   implements: [Node],
@@ -27,23 +27,21 @@ export class User extends BaseEntity implements Node {
   })
   id: string;
 
-  @Field({nullable: true})
+  @Field({ nullable: true })
   @Column()
   walletAddress: string;
 
-  @Field({nullable: true})
-  @Column()
-  token: string;
+  @Field({ nullable: true })
+  @Column('bigint', {
+    unsigned: true,
+  }) 
+  nonce: string ;
 
   @CreateDateColumn()
   createdAt: Date;
 
   @UpdateDateColumn()
   updatedAt: Date;
-
-
-  @ManyToMany(() => PlayerEntity, (player) => player.users)
-  players: PlayerEntity[];
 
   constructor(partial: DeepPartial<User>) {
     super();
