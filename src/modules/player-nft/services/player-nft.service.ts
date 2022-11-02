@@ -12,10 +12,12 @@ export class PlayerNftService {
 
   async findByWallet(walletAddress: string) {
     try {
-      return await this.playerNftRepository.createQueryBuilder('nft')
+      const a = await this.playerNftRepository.createQueryBuilder('nft')
         .leftJoinAndSelect('nft.player', 'player')
         .where('walletAddress = :walletAddress', {walletAddress})
-        .getMany();
+        .getQuery();
+        console.log(a)
+        // .getMany();
     } catch (error) {
       console.log('error', error);
       throw new ApolloError('Get Player Fail', 'get_player_failed');
@@ -42,7 +44,7 @@ export class PlayerNftService {
         player,
         rewardCode: random(1, 100),
         tokenId: uniqueId(),
-        user
+        walletAddress
       });
       return await this.playerNftRepository.save(createData);
     } catch (error) {

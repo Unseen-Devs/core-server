@@ -33,6 +33,10 @@ export class PlayerNftEntity extends BaseEntity implements Node {
 
   @UpdateDateColumn()
   updatedAt: Date;
+
+  @Field({nullable: true})
+  @Column()
+  walletAddress: string;
   
   // @Field({nullable: true})
   // @Column('bigint', {
@@ -40,9 +44,9 @@ export class PlayerNftEntity extends BaseEntity implements Node {
   // })
   // playerId: number;
 
-  @ManyToOne(() => User)
-  @JoinColumn({ name: "walletAddress" })
-  user: User;
+  // @ManyToOne(() => User)
+  // @JoinColumn({ name: "walletAddress" })
+  // user: User;
 
   @Field({nullable: true})
   @ManyToOne(() => PlayerEntity)
