@@ -34,11 +34,19 @@ export class PlayerNftEntity extends BaseEntity implements Node {
   @UpdateDateColumn()
   updatedAt: Date;
   
+  // @Field({nullable: true})
+  // @Column('bigint', {
+  //   unsigned: true,
+  // })
+  // playerId: number;
+
   @ManyToOne(() => User)
   @JoinColumn({ name: "walletAddress" })
   user: User;
 
+  @Field({nullable: true})
   @ManyToOne(() => PlayerEntity)
+  @JoinColumn({name: "playerId"})
   player: PlayerEntity;
 
   constructor(data: DeepPartial<PlayerNftEntity>) {
