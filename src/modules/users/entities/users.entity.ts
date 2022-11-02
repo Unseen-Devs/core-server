@@ -13,7 +13,7 @@ import { ObjectType, Field, ID } from '@nestjs/graphql';
 import { Node, PaginationBase } from 'src/graphql/types/common.interface.entity';
 import { snowflake } from 'src/helpers/common';
 import { PlayerEntity } from 'src/modules/player/entities/player.entity';
-import { PlayerNftEntity } from '../../player_nft/entities/player-nft.entity';
+import { PlayerNftEntity } from '../../player-nft/entities/player-nft.entity';
 
 @ObjectType({
   implements: [Node],

@@ -1,7 +1,7 @@
 import { TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { Opta } from './modules/opta/entities/opta.entity';
 import { PlayerEntity } from './modules/player/entities/player.entity';
-import { PlayerNftEntity } from './modules/player_nft/entities/player-nft.entity';
+import { PlayerNftEntity } from './modules/player-nft/entities/player-nft.entity';
 import { RewardEntity } from './modules/reward/entities/reward.entity';
 import { User } from './modules/users/entities/users.entity';
 

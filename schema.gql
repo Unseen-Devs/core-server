@@ -280,9 +280,10 @@ type PlayerConnection {
 """Reward"""
 type Reward implements Node {
   id: ID!
-  walletAddress: ID!
   rewardAmount: Float
   rewardType: RewardType
+  walletAddress: String!
+  tokenId: String!
 }
 
 enum RewardType {
@@ -303,6 +304,7 @@ type Query {
   getPlayerByWallet(walletAddress: String!, id: String!): Player
   getPlayersByWallet(walletAddress: String!): [Player!]
   generatePlayer: [Player!]
+  getPlayerNftsByWallet(walletAddress: String!): [PlayerNft!]
   getRewardByWalledAndType(walletAddress: String!, rewardType: RewardType): Reward!
 }
 
