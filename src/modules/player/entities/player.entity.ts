@@ -84,9 +84,6 @@ export class PlayerEntity extends BaseEntity implements Node {
 
   @UpdateDateColumn()
   updatedAt: Date;
-
-  @OneToMany(() => PlayerNftEntity, nft => nft.player)
-  nft: PlayerNftEntity
   
   constructor(data: DeepPartial<PlayerEntity>) {
     super();

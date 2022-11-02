@@ -219,17 +219,6 @@ type MatchEventMA3Model {
   event: [MatchEventEventModel!]
 }
 
-"""PlayerNft"""
-type PlayerNft implements Node {
-  id: ID!
-  tokenId: String
-  rewardCode: Float
-  walletAddress: String
-  player: Player
-  createdAt: DateTime!
-  updatedAt: DateTime!
-}
-
 """Player"""
 type Player implements Node {
   id: ID!
@@ -249,7 +238,6 @@ type Player implements Node {
   touch: Float
   createdAt: DateTime!
   updatedAt: DateTime!
-  nft: PlayerNft!
 }
 
 enum PlayerTier {
@@ -260,6 +248,18 @@ enum PlayerTier {
 type PlayerConnection {
   items: [Player!]
   meta: BasePaginationMeta!
+}
+
+"""PlayerNft"""
+type PlayerNft implements Node {
+  id: ID!
+  tokenId: String
+  rewardCode: Float
+  walletAddress: String
+  playerId: String
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  player: Player
 }
 
 type User implements Node {

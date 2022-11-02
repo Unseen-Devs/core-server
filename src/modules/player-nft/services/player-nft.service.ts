@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ApolloError } from 'apollo-server-express';
 import { random, uniqueId } from 'lodash';
+import { PlayerEntity } from 'src/modules/player/entities/player.entity';
 import { PlayerTierEnum } from 'src/modules/player/enums/player.enum';
 import { PlayerRepository } from 'src/modules/player/repositories/player.repository';
 import { UserRepository } from 'src/modules/users/repositories/users.repository';
@@ -12,12 +13,10 @@ export class PlayerNftService {
 
   async findByWallet(walletAddress: string) {
     try {
-      const a = await this.playerNftRepository.createQueryBuilder('nft')
-        .leftJoinAndSelect('nft.player', 'player')
+      return await this.playerNftRepository.createQueryBuilder('nft')
+        .leftJoinAndSelect(PlayerEntity, 'player', 'nft.playerId = player.id')
         .where('walletAddress = :walletAddress', {walletAddress})
-        .getQuery();
-        console.log(a)
-        // .getMany();
+        .getMany();
     } catch (error) {
       console.log('error', error);
       throw new ApolloError('Get Player Fail', 'get_player_failed');
@@ -26,7 +25,6 @@ export class PlayerNftService {
 
   async genPlayerNft(walletAddress: string, type: PlayerTierEnum) {
     try {
-      const user = await this.userRepository.findOne({where: walletAddress});
       const players = await this.playerRepository.find({
         where: {
           type
@@ -34,17 +32,17 @@ export class PlayerNftService {
       });
 
       const playerIds = players.map(m => m.id);
-      const nft = playerIds[Math.floor(Math.random()*playerIds.length)];
+      const playerId = playerIds[Math.floor(Math.random()*playerIds.length)];
       
       const player = await this.playerRepository.findOne({
-        where:{id: nft}
+        where:{id: playerId}
       });
       
       const createData = await this.playerNftRepository.create({
-        player,
+        playerId,
+        walletAddress,
         rewardCode: random(1, 100),
         tokenId: uniqueId(),
-        walletAddress
       });
       return await this.playerNftRepository.save(createData);
     } catch (error) {

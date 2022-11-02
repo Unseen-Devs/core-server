@@ -5,6 +5,7 @@ import { PlayerArgs } from '../dto/player.args';
 import { PlayerEntity } from '../entities/player.entity';
 import { getConnection } from 'typeorm';
 import { UserRepository } from '../../users/repositories/users.repository';
+import { PlayerNftEntity } from '../../player-nft/entities/player-nft.entity';
 
 @Injectable()
 export class PlayerService {
@@ -42,11 +43,11 @@ export class PlayerService {
 
       const data = await this.playerRepository.createQueryBuilder('player')
         .leftJoinAndSelect(
-          'player.nft',
-          'nft')
+          PlayerNftEntity,
+          'nft',
+          'player.id = nft.playerId')
         .where('nft.walletAddress = :walletAddress', { walletAddress })
         .getMany();
-        
         return data;
     } catch (error) {
       console.log('error', error);
