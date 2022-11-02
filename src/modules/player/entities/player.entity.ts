@@ -4,7 +4,7 @@ import { snowflake } from 'src/helpers/common';
 import { User } from 'src/modules/users/entities/users.entity';
 import { Column, CreateDateColumn, DeepPartial, Entity, UpdateDateColumn, BaseEntity, ManyToMany, JoinTable, OneToMany } from 'typeorm';
 import { PlayerTierEnum } from '../enums/player.enum';
-import { PlayerNftEntity } from '../../player_nft/entities/player-nft.entity';
+import { PlayerNftEntity } from '../../player-nft/entities/player-nft.entity';
 
 @ObjectType('Player', {
   description: 'Player',
