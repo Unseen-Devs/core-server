@@ -40,7 +40,7 @@ export class PlayerNftService {
       
       const createData = await this.playerNftRepository.create({
         player,
-        rewardCode: random(0, 100),
+        rewardCode: random(1, 100),
         tokenId: uniqueId(),
         user
       });
