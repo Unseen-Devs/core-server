@@ -239,10 +239,10 @@ type PlayerNft implements Node {
   id: ID!
   tokenId: String
   rewardCode: Float
+  player: Player
   createdAt: DateTime!
   updatedAt: DateTime!
   user: User!
-  player: Player!
 }
 
 """Player"""
@@ -321,6 +321,7 @@ input SortInput {
 type Mutation {
   """Create user by wallet address"""
   createUser(input: NewUserWalletInput!): User
+  genPlayerNft(walletAddress: String!, type: PlayerTier!): PlayerNft
 }
 
 input NewUserWalletInput {
