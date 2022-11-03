@@ -37,7 +37,7 @@ export class PlayerNftService {
       const player = await this.playerRepository.findOne({
         where:{id: playerId}
       });
-      
+      console.log(playerId, player)
       const createData = await this.playerNftRepository.create({
         playerId,
         walletAddress,
