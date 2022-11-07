@@ -6,16 +6,23 @@ import { PlayerTierEnum } from 'src/modules/player/enums/player.enum';
 import { PlayerRepository } from 'src/modules/player/repositories/player.repository';
 import { UserRepository } from 'src/modules/users/repositories/users.repository';
 import { PlayerNftRepository } from '../repositories/player-nft.repository';
+import { ClubEntity } from '../../club/entities/club.entity';
 
 @Injectable()
 export class PlayerNftService {
-  constructor(private readonly userRepository: UserRepository, private readonly playerRepository: PlayerRepository, private readonly playerNftRepository: PlayerNftRepository){}
+  constructor(
+    private readonly userRepository: UserRepository,
+    private readonly playerRepository: PlayerRepository,
+    private readonly playerNftRepository: PlayerNftRepository,
+  ) {}
 
   async findByWallet(walletAddress: string) {
     try {
-      return await this.playerNftRepository.createQueryBuilder('nft')
+      return await this.playerNftRepository
+        .createQueryBuilder('nft')
         .leftJoinAndSelect(PlayerEntity, 'player', 'nft.playerId = player.id')
-        .where('walletAddress = :walletAddress', {walletAddress})
+        .leftJoinAndSelect(ClubEntity, 'club', 'player.clubId = club.id')
+        .where('walletAddress = :walletAddress', { walletAddress })
         .getMany();
     } catch (error) {
       console.log('error', error);
@@ -27,17 +34,17 @@ export class PlayerNftService {
     try {
       const players = await this.playerRepository.find({
         where: {
-          type
-        }
+          type,
+        },
       });
 
-      const playerIds = players.map(m => m.id);
-      const playerId = playerIds[Math.floor(Math.random()*playerIds.length)];
-      
+      const playerIds = players.map((m) => m.id);
+      const playerId = playerIds[Math.floor(Math.random() * playerIds.length)];
+
       const player = await this.playerRepository.findOne({
-        where:{id: playerId}
+        where: { id: playerId },
       });
-      console.log(playerId, player)
+      console.log(playerId, player);
       const createData = await this.playerNftRepository.create({
         playerId,
         walletAddress,

@@ -4,12 +4,14 @@ import { PlayerNftService } from '../services/player-nft.service';
 import { PlayerTierEnum } from '../../player/enums/player.enum';
 import { PlayerEntity } from '../../player/entities/player.entity';
 import { PlayerDataLoader } from 'src/modules/player/dataloaders/player.dataloader';
+import { PlayerService } from 'src/modules/player/services/player.service';
 
 @Resolver(() => PlayerNftEntity)
 export class PlayerNftResolver {
   constructor(
     private readonly playerDataLoader: PlayerDataLoader,
     private readonly playerNftService: PlayerNftService,
+    private readonly playerService: PlayerService,
   ) {}
 
   @Query(() => [PlayerNftEntity], {
@@ -37,6 +39,7 @@ export class PlayerNftResolver {
   })
   async player(@Parent() playerNft: PlayerNftEntity) {
     const { playerId } = playerNft;
-    return this.playerDataLoader.load(playerId);
+    return await this.playerService.findOne(playerId);
+    // return this.playerDataLoader.load(playerId);
   }
 }

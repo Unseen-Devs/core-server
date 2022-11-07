@@ -9,11 +9,13 @@ import { PlayerNftEntity } from '../../player-nft/entities/player-nft.entity';
 
 @Injectable()
 export class PlayerService {
-  constructor(private readonly userRepository: UserRepository, private readonly playerRepository: PlayerRepository){}
+  constructor(private readonly userRepository: UserRepository, private readonly playerRepository: PlayerRepository) {}
 
   async findOne(id: string) {
     try {
-      return await this.playerRepository.findOne(id);  
+      return await this.playerRepository.findOne(id, {
+        relations: ['club'],
+      });
     } catch (error) {
       console.log('error', error);
       throw new ApolloError('Get Player Fail', 'get_player_failed');
@@ -22,16 +24,14 @@ export class PlayerService {
 
   async findOneByWallet(walletAddress: string, id: string) {
     try {
-
-      const data = await this.playerRepository.createQueryBuilder('player')
-        .leftJoinAndSelect(
-          'player.nft',
-          'nft')
+      const data = await this.playerRepository
+        .createQueryBuilder('player')
+        .leftJoinAndSelect('player.nft', 'nft')
         .where('player.id = :id', { id })
         .where('nft.walletAddress = :walletAddress', { walletAddress })
         .getOne();
-        
-        return data;
+
+      return data;
     } catch (error) {
       console.log('error', error);
       throw new ApolloError('Get Player Fail', 'get_player_failed');
@@ -40,15 +40,12 @@ export class PlayerService {
 
   async findByWallet(walletAddress: string) {
     try {
-
-      const data = await this.playerRepository.createQueryBuilder('player')
-        .leftJoinAndSelect(
-          PlayerNftEntity,
-          'nft',
-          'player.id = nft.playerId')
+      const data = await this.playerRepository
+        .createQueryBuilder('player')
+        .leftJoinAndSelect(PlayerNftEntity, 'nft', 'player.id = nft.playerId')
         .where('nft.walletAddress = :walletAddress', { walletAddress })
         .getMany();
-        return data;
+      return data;
     } catch (error) {
       console.log('error', error);
       throw new ApolloError('Get Player Fail', 'get_player_failed');
@@ -87,7 +84,7 @@ export class PlayerService {
         positionSide: 'Goalkeeper',
         formationPlace: '',
         touch: 0,
-        type: 'TIER1'
+        type: 'TIER1',
       },
       {
         rewardCode: 2,
@@ -104,7 +101,7 @@ export class PlayerService {
         positionSide: '',
         formationPlace: '',
         touch: 0,
-        type: 'TIER1'
+        type: 'TIER1',
       },
       {
         rewardCode: 3,
@@ -121,7 +118,7 @@ export class PlayerService {
         positionSide: 'Forward',
         formationPlace: '',
         touch: 0,
-        type: 'TIER1'
+        type: 'TIER1',
       },
       {
         rewardCode: 4,
@@ -138,7 +135,7 @@ export class PlayerService {
         positionSide: 'Midfielder',
         formationPlace: '',
         touch: 0,
-        type: 'TIER1'
+        type: 'TIER1',
       },
       {
         rewardCode: 5,
@@ -155,7 +152,7 @@ export class PlayerService {
         positionSide: 'Midfielder',
         formationPlace: '',
         touch: 0,
-        type: 'TIER1'
+        type: 'TIER1',
       },
       {
         rewardCode: 6,
@@ -172,7 +169,7 @@ export class PlayerService {
         positionSide: 'Goalkeeper',
         formationPlace: '',
         touch: 0,
-        type: 'TIER2'
+        type: 'TIER2',
       },
       {
         rewardCode: 7,
@@ -189,7 +186,7 @@ export class PlayerService {
         positionSide: 'Defender',
         formationPlace: '',
         touch: 0,
-        type: 'TIER2'
+        type: 'TIER2',
       },
       {
         rewardCode: 8,
@@ -206,7 +203,7 @@ export class PlayerService {
         positionSide: 'Defender',
         formationPlace: '',
         touch: 0,
-        type: 'TIER2'
+        type: 'TIER2',
       },
       {
         rewardCode: 9,
@@ -223,7 +220,7 @@ export class PlayerService {
         positionSide: 'Midfielder',
         formationPlace: '',
         touch: 0,
-        type: 'TIER2'
+        type: 'TIER2',
       },
       {
         rewardCode: 10,
@@ -240,7 +237,7 @@ export class PlayerService {
         positionSide: 'Forward',
         formationPlace: '',
         touch: 0,
-        type: 'TIER2'
+        type: 'TIER2',
       },
     ];
 
@@ -249,20 +246,20 @@ export class PlayerService {
     await queryRunner.connect();
     await queryRunner.startTransaction();
     try {
-      players.forEach(async item => {
+      players.forEach(async (item) => {
         const player = this.playerRepository.create(item);
         await this.playerRepository.save(player);
       });
 
       await queryRunner.commitTransaction();
-    } catch(error) {
+    } catch (error) {
       // since we have errors lets rollback the changes we made
       await queryRunner.rollbackTransaction();
     } finally {
       // you need to release a queryRunner which was manually instantiated
       await queryRunner.release();
     }
-    
+
     return this.playerRepository.find();
   }
 }
