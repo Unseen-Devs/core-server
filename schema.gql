@@ -219,6 +219,16 @@ type MatchEventMA3Model {
   event: [MatchEventEventModel!]
 }
 
+"""Club"""
+type Club implements Node {
+  id: ID!
+  code: String!
+  name: String!
+  players: [Player!]!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
 """Player"""
 type Player implements Node {
   id: ID!
@@ -236,8 +246,10 @@ type Player implements Node {
   positionSide: String
   formationPlace: String
   touch: Float
+  club: Club!
   createdAt: DateTime!
   updatedAt: DateTime!
+  player: Player
 }
 
 enum PlayerTier {

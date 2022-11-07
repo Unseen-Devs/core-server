@@ -2,41 +2,44 @@ import { Resolver, Query, Mutation, Args, Int, ResolveField, Parent } from '@nes
 import { PlayerNftEntity } from '../entities/player-nft.entity';
 import { PlayerNftService } from '../services/player-nft.service';
 import { PlayerTierEnum } from '../../player/enums/player.enum';
-import { PlayerService } from 'src/modules/player/services/player.service';
 import { PlayerEntity } from '../../player/entities/player.entity';
+import { PlayerDataLoader } from 'src/modules/player/dataloaders/player.dataloader';
+import { PlayerService } from 'src/modules/player/services/player.service';
 
 @Resolver(() => PlayerNftEntity)
 export class PlayerNftResolver {
-  constructor(private readonly playerService: PlayerService, private readonly playerNftService: PlayerNftService) {}
-
+  constructor(
+    private readonly playerDataLoader: PlayerDataLoader,
+    private readonly playerNftService: PlayerNftService,
+    private readonly playerService: PlayerService,
+  ) {}
 
   @Query(() => [PlayerNftEntity], {
     name: 'getPlayerNftsByWallet',
-    nullable: true
+    nullable: true,
   })
-  async getPlayerNftsByWallet(
-    @Args('walletAddress', {type: () => String}) walletAddress: string
-  ) {
+  async getPlayerNftsByWallet(@Args('walletAddress', { type: () => String }) walletAddress: string) {
     return await this.playerNftService.findByWallet(walletAddress);
   }
 
   @Mutation(() => PlayerNftEntity, {
     name: 'genPlayerNft',
-    nullable: true
+    nullable: true,
   })
   async genPlayerNft(
-    @Args('walletAddress', {type: () => String}) walletAddress: string,
-    @Args('type', {type: () => PlayerTierEnum}) type: PlayerTierEnum
+    @Args('walletAddress', { type: () => String }) walletAddress: string,
+    @Args('type', { type: () => PlayerTierEnum }) type: PlayerTierEnum,
   ) {
     return await this.playerNftService.genPlayerNft(walletAddress, type);
   }
 
   @ResolveField(() => PlayerEntity, {
     name: 'player',
-    nullable: true
+    nullable: true,
   })
   async player(@Parent() playerNft: PlayerNftEntity) {
     const { playerId } = playerNft;
-    return this.playerService.findOne(playerId);
+    return await this.playerService.findOne(playerId);
+    // return this.playerDataLoader.load(playerId);
   }
 }
