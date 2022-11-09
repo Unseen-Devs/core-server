@@ -29,8 +29,9 @@ export class PlayerNftResolver {
   async genPlayerNft(
     @Args('walletAddress', { type: () => String }) walletAddress: string,
     @Args('type', { type: () => PlayerTierEnum }) type: PlayerTierEnum,
+    @Args('tokenId', { type: () => String }) tokenId: string,
   ) {
-    return await this.playerNftService.genPlayerNft(walletAddress, type);
+    return await this.playerNftService.genPlayerNft(walletAddress, type, tokenId);
   }
 
   @ResolveField(() => PlayerEntity, {
