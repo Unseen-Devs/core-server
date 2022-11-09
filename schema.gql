@@ -229,6 +229,20 @@ type Club implements Node {
   updatedAt: DateTime!
 }
 
+"""Event"""
+type Event implements Node {
+  id: ID!
+  fixtureUuid: String
+  type: EventType
+  touch: Float
+  player: Player!
+}
+
+enum EventType {
+  ASSITS
+  GOAL
+}
+
 """Player"""
 type Player implements Node {
   id: ID!
@@ -247,6 +261,7 @@ type Player implements Node {
   formationPlace: String
   touch: Float
   club: Club!
+  events: [Event!]!
   createdAt: DateTime!
   updatedAt: DateTime!
   player: Player
@@ -332,7 +347,7 @@ input SortInput {
 type Mutation {
   """Create user by wallet address"""
   createUser(input: NewUserWalletInput!): User
-  genPlayerNft(walletAddress: String!, type: PlayerTier!): PlayerNft
+  genPlayerNft(walletAddress: String!, type: PlayerTier!, tokenId: String!): PlayerNft
 }
 
 input NewUserWalletInput {

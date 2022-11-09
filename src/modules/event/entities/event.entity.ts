@@ -41,8 +41,12 @@ export class EventEntity extends BaseEntity implements Node {
   type: EventTypeEnum;
 
   @Field({ nullable: true })
-  @Column({ type: 'int4' })
+  @Column({ type: 'int' })
   touch: number;
+
+  @Field({ nullable: true })
+  @Column({ length: 300 })
+  description: string;
 
   @Field(() => PlayerEntity)
   @ManyToOne(() => PlayerEntity, (player) => player.events)

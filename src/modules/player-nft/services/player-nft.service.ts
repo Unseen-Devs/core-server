@@ -41,10 +41,6 @@ export class PlayerNftService {
       const playerIds = players.map((m) => m.id);
       const playerId = playerIds[Math.floor(Math.random() * playerIds.length)];
 
-      const player = await this.playerRepository.findOne({
-        where: { id: playerId },
-      });
-      console.log(playerId, player);
       const createData = await this.playerNftRepository.create({
         playerId,
         walletAddress,
