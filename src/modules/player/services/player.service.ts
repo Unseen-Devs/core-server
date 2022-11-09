@@ -14,7 +14,7 @@ export class PlayerService {
   async findOne(id: string) {
     try {
       return await this.playerRepository.findOne(id, {
-        relations: ['club'],
+        relations: ['club', 'events'],
       });
     } catch (error) {
       console.log('error', error);
