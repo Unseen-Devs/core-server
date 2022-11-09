@@ -235,6 +235,7 @@ type Event implements Node {
   fixtureUuid: String
   type: EventType
   touch: Float
+  description: String
   player: Player!
 }
 

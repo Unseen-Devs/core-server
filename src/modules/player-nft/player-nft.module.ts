@@ -9,9 +9,12 @@ import { PlayerRepository } from '../player/repositories/player.repository';
 import { PlayerService } from '../player/services/player.service';
 import { PlayerNftDataLoader } from './dataloaders/player-nft.dataloader';
 import { PlayerDataLoader } from '../player/dataloaders/player.dataloader';
+import { ClubRepository } from '../club/repositories/club.repository';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([PlayerNftEntity, PlayerNftRepository, PlayerRepository, UserRepository])],
+  imports: [
+    TypeOrmModule.forFeature([PlayerNftEntity, PlayerNftRepository, PlayerRepository, UserRepository, ClubRepository]),
+  ],
   providers: [PlayerNftService, PlayerService, PlayerNftResolver, PlayerNftDataLoader, PlayerDataLoader],
 })
 export class PlayerNftModule {}
