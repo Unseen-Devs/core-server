@@ -30,7 +30,7 @@ export class PlayerNftService {
     }
   }
 
-  async genPlayerNft(walletAddress: string, type: PlayerTierEnum) {
+  async genPlayerNft(walletAddress: string, type: PlayerTierEnum, tokenId: string) {
     try {
       const players = await this.playerRepository.find({
         where: {
@@ -49,7 +49,7 @@ export class PlayerNftService {
         playerId,
         walletAddress,
         rewardCode: random(1, 100),
-        tokenId: uniqueId(),
+        tokenId: tokenId,
       });
       return await this.playerNftRepository.save(createData);
     } catch (error) {

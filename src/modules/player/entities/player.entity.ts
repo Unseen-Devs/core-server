@@ -18,6 +18,7 @@ import {
 import { PlayerTierEnum } from '../enums/player.enum';
 import { PlayerNftEntity } from '../../player-nft/entities/player-nft.entity';
 import { ClubEntity } from '../../club/entities/club.entity';
+import { EventEntity } from 'src/modules/event/entities/event.entity';
 
 @ObjectType('Player', {
   description: 'Player',
@@ -109,6 +110,11 @@ export class PlayerEntity extends BaseEntity implements Node {
   @ManyToOne(() => ClubEntity, (club) => club.players)
   @JoinColumn({ name: 'clubId' })
   club: ClubEntity;
+
+  @Field(() => [EventEntity])
+  @OneToMany(() => EventEntity, (event) => event.player)
+  @JoinColumn({ name: 'playerId' })
+  events: EventEntity[];
 
   constructor(data: DeepPartial<PlayerEntity>) {
     super();

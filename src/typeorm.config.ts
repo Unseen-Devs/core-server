@@ -5,6 +5,7 @@ import { PlayerNftEntity } from './modules/player-nft/entities/player-nft.entity
 import { RewardEntity } from './modules/reward/entities/reward.entity';
 import { User } from './modules/users/entities/users.entity';
 import { ClubEntity } from './modules/club/entities/club.entity';
+import { EventEntity } from './modules/event/entities/event.entity';
 
 export const typeORMConfig: TypeOrmModuleOptions = {
   // type: 'postgres',
@@ -16,7 +17,7 @@ export const typeORMConfig: TypeOrmModuleOptions = {
   password: process.env.DATABASE_PASSWORD,
   database: process.env.DATABASE_NAME,
   synchronize: process.env.DATABASE_SYNC === 'true',
-  entities: [Opta, User, PlayerEntity, PlayerNftEntity, RewardEntity, ClubEntity],
+  entities: [Opta, User, PlayerEntity, PlayerNftEntity, RewardEntity, ClubEntity, EventEntity],
   logging: process.env.DATABASE_LOGGING === 'true',
   // useUTC: true,
 };
