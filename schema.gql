@@ -235,6 +235,7 @@ type Event implements Node {
   fixtureUuid: String
   type: EventType
   touch: Float
+  description: String
   player: Player!
 }
 
@@ -316,6 +317,15 @@ enum RewardType {
   Touch
 }
 
+type SinatureResponse {
+  message: String!
+  messageHash: String!
+  signature: String!
+  v: String!
+  r: String!
+  s: String!
+}
+
 type Query {
   getTournamentCalendar: TournamentCalendarModel
   getTournamentSchedule: TournamentScheduleModel
@@ -348,6 +358,7 @@ type Mutation {
   """Create user by wallet address"""
   createUser(input: NewUserWalletInput!): User
   genPlayerNft(walletAddress: String!, type: PlayerTier!, tokenId: String!): PlayerNft
+  generateAkshunStoreSignature(walletAddress: String!): SinatureResponse
 }
 
 input NewUserWalletInput {

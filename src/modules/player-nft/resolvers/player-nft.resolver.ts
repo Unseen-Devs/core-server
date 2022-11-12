@@ -5,6 +5,7 @@ import { PlayerTierEnum } from '../../player/enums/player.enum';
 import { PlayerEntity } from '../../player/entities/player.entity';
 import { PlayerDataLoader } from 'src/modules/player/dataloaders/player.dataloader';
 import { PlayerService } from 'src/modules/player/services/player.service';
+import { SinatureResponse } from 'src/modules/common/common.entity';
 
 @Resolver(() => PlayerNftEntity)
 export class PlayerNftResolver {
@@ -42,5 +43,13 @@ export class PlayerNftResolver {
     const { playerId } = playerNft;
     return await this.playerService.findOne(playerId);
     // return this.playerDataLoader.load(playerId);
+  }
+
+  @Mutation(() => SinatureResponse, {
+    name: 'generateAkshunStoreSignature',
+    nullable: true,
+  })
+  async generateAkshunStoreSignature(@Args('walletAddress', { type: () => String }) walletAddress: string,) {
+    return await this.playerNftService.generateAkshunStoreSignature(walletAddress);
   }
 }

@@ -70,6 +70,7 @@
     "dayjs": "^1.11.3",
     "dotenv": "^16.0.1",
     "dotenv-expand": "^8.0.3",
+    "ethereumjs-abi": "^0.6.8",
     "googleapis": "^104.0.0",
     "graphql": "^16.5.0",
     "graphql-query-complexity": "^0.11.0",
@@ -97,6 +98,7 @@
     "sonyflake": "^1.1.2",
     "typeorm": "0.2.45",
     "typeorm-adapter": "^1.5.0",
+    "web3": "^1.8.1",
     "ws": "^8.10.0"
   },
   "devDependencies": {

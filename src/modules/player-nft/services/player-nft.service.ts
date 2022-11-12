@@ -7,6 +7,7 @@ import { PlayerRepository } from 'src/modules/player/repositories/player.reposit
 import { UserRepository } from 'src/modules/users/repositories/users.repository';
 import { PlayerNftRepository } from '../repositories/player-nft.repository';
 import { ClubEntity } from '../../club/entities/club.entity';
+import { akshunStoreSignature } from 'src/modules/common/signature';
 
 @Injectable()
 export class PlayerNftService {
@@ -52,5 +53,9 @@ export class PlayerNftService {
       console.log('error', error);
       throw new ApolloError('Get Player Fail', 'get_player_failed');
     }
+  }
+
+  async generateAkshunStoreSignature(walletAddress: string){
+    return await akshunStoreSignature(walletAddress);
   }
 }
