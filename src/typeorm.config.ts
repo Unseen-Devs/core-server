@@ -8,10 +8,10 @@ import { ClubEntity } from './modules/club/entities/club.entity';
 import { EventEntity } from './modules/event/entities/event.entity';
 
 export const typeORMConfig: TypeOrmModuleOptions = {
-  type: 'postgres',
-  port: parseInt(process.env.DATABASE_PORT || '5432', 10),
-  // type: 'mysql',
-  // port: parseInt(process.env.DATABASE_PORT || '3306', 10),
+  // type: 'postgres',
+  // port: parseInt(process.env.DATABASE_PORT || '5432', 10),
+  type: 'mysql',
+  port: parseInt(process.env.DATABASE_PORT || '3306', 10),
   host: process.env.DATABASE_HOST,
   username: process.env.DATABASE_USER,
   password: process.env.DATABASE_PASSWORD,
