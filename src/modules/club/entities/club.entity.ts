@@ -1,8 +1,7 @@
-import { ObjectType, Field, Int, ID } from '@nestjs/graphql';
+import { ObjectType, Field, ID } from '@nestjs/graphql';
 import { Node, PaginationBase } from 'src/graphql/types/common.interface.entity';
 import { snowflake } from 'src/helpers/common';
 import { PlayerEntity } from 'src/modules/player/entities/player.entity';
-import { User } from 'src/modules/users/entities/users.entity';
 import {
   Column,
   CreateDateColumn,
@@ -10,8 +9,6 @@ import {
   Entity,
   UpdateDateColumn,
   BaseEntity,
-  ManyToMany,
-  JoinTable,
   OneToMany,
   JoinColumn,
 } from 'typeorm';
