@@ -16,6 +16,8 @@ import { UsersModule } from './modules/users/users.module';
 import { PlayerNftModule } from './modules/player-nft/player-nft.module';
 import { ClubModule } from './modules/club/club.module';
 import { EventModule } from './modules/event/event.module';
+import { ScheduleModule } from '@nestjs/schedule';
+import { TasksModule } from './modules/tasks/task.module';
 
 @Module({
   imports: [
@@ -37,7 +39,7 @@ import { EventModule } from './modules/event/event.module';
         },
       },
     }),
-    // EventsModule,
+    ScheduleModule.forRoot(),
     CommonModule,
     OptaModule,
     UsersModule,
@@ -46,6 +48,7 @@ import { EventModule } from './modules/event/event.module';
     RewardModule,
     ClubModule,
     EventModule,
+    TasksModule,
   ],
 })
 export class AppModule implements NestModule {
