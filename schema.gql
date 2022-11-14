@@ -229,19 +229,24 @@ type Club implements Node {
   updatedAt: DateTime!
 }
 
+type EventInfo {
+  eventId: String!
+  typeId: String!
+  timeMin: Int!
+  timeSec: Int!
+  outcome: Int!
+  assist: Int!
+  touch: Int!
+}
+
 """Event"""
 type Event implements Node {
   id: ID!
   fixtureUuid: String
-  type: EventType
-  touch: Float
+  eventInfo: EventInfo
+  totalTouch: Float
   description: String
   player: Player!
-}
-
-enum EventType {
-  ASSITS
-  GOAL
 }
 
 """Player"""

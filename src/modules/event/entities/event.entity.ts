@@ -17,6 +17,30 @@ import {
 } from 'typeorm';
 import { PlayerEntity } from 'src/modules/player/entities/player.entity';
 
+@ObjectType('EventInfo')
+export class EventInfo {
+  @Field(() => String)
+  eventId: string;
+
+  @Field(() => String)
+  typeId: string;
+
+  @Field(() => Int)
+  timeMin: number;
+
+  @Field(() => Int)
+  timeSec: number;
+
+  @Field(() => Int)
+  outcome: number;
+
+  @Field(() => Int)
+  assist: number;
+
+  @Field(() => Int)
+  touch: number;
+}
+
 @ObjectType('Event', {
   description: 'Event',
   implements: [Node],
@@ -36,13 +60,13 @@ export class EventEntity extends BaseEntity implements Node {
   @Column({ length: 100 })
   fixtureUuid: string;
 
-  @Field(() => EventTypeEnum, { nullable: true })
-  @Column({ length: 10 })
-  type: EventTypeEnum;
+  @Field(() => EventInfo, { nullable: true })
+  @Column({ type: 'json' })
+  eventInfo: EventInfo;
 
   @Field({ nullable: true })
   @Column({ type: 'int' })
-  touch: number;
+  totalTouch: number;
 
   @Field({ nullable: true })
   @Column({ length: 300 })
