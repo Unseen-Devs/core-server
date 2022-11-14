@@ -1,9 +1,7 @@
 import { Field, ID, ObjectType } from '@nestjs/graphql';
 import { Node, PaginationBase } from 'src/graphql/types/common.interface.entity';
 import { snowflake } from 'src/helpers/common';
-import { User } from 'src/modules/users/entities/users.entity';
-import { BaseEntity, Column, CreateDateColumn, DeepPartial, Entity, JoinColumn, ManyToOne, UpdateDateColumn } from "typeorm";
-import { PlayerEntity } from '../../player/entities/player.entity';
+import { BaseEntity, Column, CreateDateColumn, DeepPartial, Entity, UpdateDateColumn } from "typeorm";
 
 @ObjectType('PlayerNft', {
   description: 'PlayerNft',
@@ -27,6 +25,10 @@ export class PlayerNftEntity extends BaseEntity implements Node {
   @Field({nullable: true})
   @Column()
   rewardCode: number;
+
+  @Field({nullable: true})
+  @Column()
+  transactionHash: string;
 
   @CreateDateColumn()
   createdAt: Date;

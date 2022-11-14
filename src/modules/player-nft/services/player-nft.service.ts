@@ -1,10 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { ApolloError } from 'apollo-server-express';
-import { random, uniqueId } from 'lodash';
+import { random } from 'lodash';
 import { PlayerEntity } from 'src/modules/player/entities/player.entity';
 import { PlayerTierEnum } from 'src/modules/player/enums/player.enum';
 import { PlayerRepository } from 'src/modules/player/repositories/player.repository';
-import { UserRepository } from 'src/modules/users/repositories/users.repository';
 import { PlayerNftRepository } from '../repositories/player-nft.repository';
 import { ClubEntity } from '../../club/entities/club.entity';
 import { akshunStoreSignature } from 'src/modules/common/signature';
@@ -12,7 +11,6 @@ import { akshunStoreSignature } from 'src/modules/common/signature';
 @Injectable()
 export class PlayerNftService {
   constructor(
-    private readonly userRepository: UserRepository,
     private readonly playerRepository: PlayerRepository,
     private readonly playerNftRepository: PlayerNftRepository,
   ) {}
@@ -31,7 +29,7 @@ export class PlayerNftService {
     }
   }
 
-  async genPlayerNft(walletAddress: string, type: PlayerTierEnum, tokenId: string) {
+  async genPlayerNft(walletAddress: string, type: PlayerTierEnum, tokenId: string, transactionHash: string) {
     try {
       const players = await this.playerRepository.find({
         where: {
@@ -47,6 +45,7 @@ export class PlayerNftService {
         walletAddress,
         rewardCode: random(1, 100),
         tokenId: tokenId,
+        transactionHash,
       });
       return await this.playerNftRepository.save(createData);
     } catch (error) {
