@@ -100,8 +100,8 @@ export class OptaService {
       }
       const data = response.data.match;
       // Touch
-      const typeIds = '1,2,3,4,7,8,10,11,12,13,14,15,16,41,42,50,54,61,73,74';
-      const prsn = '4jyrztlaueae7eg18kuvxa489';
+      // const typeIds = '1,2,3,4,7,8,10,11,12,13,14,15,16,41,42,50,54,61,73,74';
+      const prsn = 'atzboo800gv7gic2rgvgo0kq1';
       const promises: Promise<any>[] = [];
       data.forEach(d => {
         const urlTouch = `${OPTA_BASE_URL}/matchevent/${OPTA_OUTLET_AUTH_KEY}/${d.matchInfo.id}`;
@@ -119,7 +119,8 @@ export class OptaService {
               }
             }));
         }
-      });
+      });      
+      
       const dataEvents: any[] = [];
       await Promise.all(promises).then(res => {
         res.forEach(r => {

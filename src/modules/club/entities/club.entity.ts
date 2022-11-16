@@ -36,6 +36,10 @@ export class ClubEntity extends BaseEntity implements Node {
   @Column({ nullable: true })
   name: string;
 
+  @Field({ nullable: true })
+  @Column({ length: 100 })
+  optaId: string;
+
   @CreateDateColumn()
   createdAt: Date;
 

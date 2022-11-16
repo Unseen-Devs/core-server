@@ -100,6 +100,10 @@ export class PlayerEntity extends BaseEntity implements Node {
   @Field({ nullable: true, defaultValue: 0 })
   touch: number;
 
+  @Field({ nullable: true })
+  @Column({ length: 100 })
+  optaId: string;
+
   @CreateDateColumn()
   createdAt: Date;
 

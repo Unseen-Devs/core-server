@@ -224,6 +224,7 @@ type Club implements Node {
   id: ID!
   code: String!
   name: String!
+  optaId: String
   players: [Player!]!
   createdAt: DateTime!
   updatedAt: DateTime!
@@ -266,6 +267,7 @@ type Player implements Node {
   positionSide: String
   formationPlace: String
   touch: Float
+  optaId: String
   club: Club!
   events: [Event!]!
   createdAt: DateTime!
@@ -288,6 +290,7 @@ type PlayerNft implements Node {
   id: ID!
   tokenId: String
   rewardCode: Float
+  transactionHash: String
   walletAddress: String
   playerId: String
   createdAt: DateTime!
@@ -362,7 +365,7 @@ input SortInput {
 type Mutation {
   """Create user by wallet address"""
   createUser(input: NewUserWalletInput!): User
-  genPlayerNft(walletAddress: String!, type: PlayerTier!, tokenId: String!): PlayerNft
+  genPlayerNft(walletAddress: String!, type: PlayerTier!, tokenId: String!, transactionHash: String!): PlayerNft
   generateAkshunStoreSignature(walletAddress: String!): SinatureResponse
 }
 
