@@ -40,10 +40,30 @@ export class PlayerNftService {
       const playerIds = players.map((m) => m.id);
       const playerId = playerIds[Math.floor(Math.random() * playerIds.length)];
 
+      const owerNftIds = await this.playerNftRepository.find({
+        where: {
+          playerId,
+          walletAddress,
+        },
+      });
+
+      const rewardCodes = owerNftIds.map((e, index) => {
+        return e.rewardCode;
+      });
+
+      function generateRandom(min, max, exclude) {
+        let random;
+        while (!random) {
+          const x = Math.floor(Math.random() * (max - min + 1)) + min;
+          if (exclude.indexOf(x) === -1) random = x;
+        }
+        return random;
+      }
+      
       const createData = await this.playerNftRepository.create({
         playerId,
         walletAddress,
-        rewardCode: random(1, 100),
+        rewardCode: generateRandom(1, 100, rewardCodes),
         tokenId: tokenId,
         transactionHash,
       });
@@ -54,7 +74,7 @@ export class PlayerNftService {
     }
   }
 
-  async generateAkshunStoreSignature(walletAddress: string){
+  async generateAkshunStoreSignature(walletAddress: string) {
     return await akshunStoreSignature(walletAddress);
   }
 }
