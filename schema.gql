@@ -285,6 +285,28 @@ type PlayerConnection {
   meta: BasePaginationMeta!
 }
 
+type EventHistoryInfo {
+  eventId: String!
+  typeId: String!
+  timeMin: Int!
+  timeSec: Int!
+  outcome: Int!
+  assist: Int!
+  touch: Int!
+}
+
+"""Event History"""
+type EventHistory implements Node {
+  id: ID!
+  fixtureUuid: String
+  eventInfo: EventHistoryInfo
+  totalTouch: Float
+  playerNftId: String
+  walletAddress: String
+  description: String
+  playerNFT: PlayerNft!
+}
+
 """PlayerNft"""
 type PlayerNft implements Node {
   id: ID!
@@ -293,6 +315,7 @@ type PlayerNft implements Node {
   transactionHash: String
   walletAddress: String
   playerId: String
+  eventHistory: [EventHistory!]!
   createdAt: DateTime!
   updatedAt: DateTime!
   player: Player

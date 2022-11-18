@@ -1,7 +1,8 @@
 import { Field, ID, ObjectType } from '@nestjs/graphql';
 import { Node, PaginationBase } from 'src/graphql/types/common.interface.entity';
 import { snowflake } from 'src/helpers/common';
-import { BaseEntity, Column, CreateDateColumn, DeepPartial, Entity, UpdateDateColumn } from "typeorm";
+import { EventHistoryEntity } from 'src/modules/event-history/entities/event-history.entity';
+import { BaseEntity, Column, CreateDateColumn, DeepPartial, Entity, OneToMany, UpdateDateColumn } from "typeorm";
 
 @ObjectType('PlayerNft', {
   description: 'PlayerNft',
@@ -43,6 +44,10 @@ export class PlayerNftEntity extends BaseEntity implements Node {
   @Field({nullable: true})
   @Column()
   playerId: string;
+
+  @Field(() => [EventHistoryEntity])
+  @OneToMany(() => EventHistoryEntity, (eventHistory) => eventHistory.playerNFT)
+  eventHistory: EventHistoryEntity[];
 
   constructor(data: DeepPartial<PlayerNftEntity>) {
     super();
