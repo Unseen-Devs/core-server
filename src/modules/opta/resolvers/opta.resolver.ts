@@ -3,7 +3,7 @@ import { Opta } from '../entities/opta.entity';
 import { OptaService } from '../services/opta.service';
 import { TournamentCalendarModel } from '../entities/opta_model.entity';
 import { FixturesModelAndResultsModel, TournamentScheduleModel } from '../entities/tournament.entity';
-import { MatchEventModel, MatchEventMA3Model } from '../entities/match_event_model.entity';
+import { MatchEventModel, MatchEventMA3Model, MA3Model } from '../entities/match_event_model.entity';
 import { FixturesAndResultsArgs } from '../dto/opta.args';
 
 @Resolver(() => Opta)
@@ -44,5 +44,12 @@ export class OptaResolver {
   })
   async getMatchEventsMA3() {
     return await this.optaService.getMatchEventsMA3("7ly4fqhihqbfm8nwseibc97h0", "bijr1ghojrxc61se7ebt72f9x");
+  }
+
+  @Query(() => [MA3Model], {
+    nullable: true
+  })
+  async getNFTMA3Events(@Args() input: FixturesAndResultsArgs) {
+    return await this.optaService.getNFTMA3Events(input);
   }
 }

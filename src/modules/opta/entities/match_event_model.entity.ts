@@ -58,6 +58,12 @@ export class MatchEventGoal {
 
     @Field({nullable: true})
     awayScore: number;
+
+    @Field({nullable: true, defaultValue: 0})
+    assistPlayerTouch?: number;
+
+    @Field({nullable: true, defaultValue: 0})
+    scorerPlayerTouch?: number;
 }
 
 @ObjectType()
@@ -144,4 +150,13 @@ export class MatchEventMA3Model{
 
     @Field(()=> [MatchEventEventModel], { nullable : true })
     event: MatchEventEventModel[]
+}
+
+@ObjectType()
+export class MA3Model {
+    @Field({nullable: true})
+    fixtureId: string;
+
+    @Field(()=> [MatchEventGoal], { nullable : true, defaultValue: []})
+    goal: MatchEventGoal[];
 }

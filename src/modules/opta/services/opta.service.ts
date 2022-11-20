@@ -4,14 +4,20 @@ import axios from 'axios';
 import { TournamentCalendarModel } from '../entities/opta_model.entity';
 import { TournamentScheduleDetailModel } from '../entities/tournament.entity';
 import { FixturesAndResultsArgs } from '../dto/opta.args';
-import { forEach } from 'lodash';
+import { uniqBy } from 'lodash'
+import { MA3Model, MatchEventGoal } from '../entities/match_event_model.entity';
+import { PlayerNftRepository } from 'src/modules/player-nft/repositories/player-nft.repository';
 
 const OPTA_OUTLET_AUTH_KEY = process.env.OPTA_OUTLET_AUTH_KEY;
 const OPTA_BASE_URL = process.env.OPTA_BASE_URL;
+const touchEventTypeIds = [1,2,3,7,8,10,11,12,13,14,15,16,41,42,50,54,61,73,74];
+const ONE_SECOND = 1000;
 
 @Injectable()
 export class OptaService {
-  constructor() {}
+  constructor(
+    private readonly playerNftRepository: PlayerNftRepository
+  ) {}
 
   async getTournamentCalendar() {
     const url = `${OPTA_BASE_URL}/tournamentcalendar/${OPTA_OUTLET_AUTH_KEY}/active/authorized\?_rt\=b\&_fmt\=json`;
@@ -73,7 +79,7 @@ export class OptaService {
     });
   }
 
-  async getFixturesAndResults(input: FixturesAndResultsArgs){
+  async getFixturesAndResults(input: FixturesAndResultsArgs, playerOptaId?: string){
     const tournamentCalendar = await this.getTournamentCalendar();
     if(!tournamentCalendar){
       throw new ApolloError('Get Tournament Calendar Fail', 'get_tournament_calendar_failed');
@@ -100,8 +106,7 @@ export class OptaService {
       }
       const data = response.data.match;
       // Touch
-      const typeIds = '1,2,3,4,7,8,10,11,12,13,14,15,16,41,42,50,54,61,73,74';
-      const prsn = '4jyrztlaueae7eg18kuvxa489';
+      const prsn = playerOptaId ?? '4jyrztlaueae7eg18kuvxa489';
       const promises: Promise<any>[] = [];
       data.forEach(d => {
         const urlTouch = `${OPTA_BASE_URL}/matchevent/${OPTA_OUTLET_AUTH_KEY}/${d.matchInfo.id}`;
@@ -114,7 +119,7 @@ export class OptaService {
               params: {
                 _rt: "b",
                 _fmt: "json",
-                type: '1,2,3,4,7,8,10,11,12,13,14,15,16,41,42,50,54,61,73,74',
+                type: touchEventTypeIds.toString(),
                 prsn,
               }
             }));
@@ -126,11 +131,10 @@ export class OptaService {
           if(r.data)
           dataEvents.push({
             id: r.data.matchInfo.id,
-            event: r.data.liveData.event.filter(f => ([1,2,3,7,8,10,11,12,13,14,15,16,41,42,50,54,61,73,74].includes(f.typeId) || (f.typeId == 4 && f.outcome == 1)))
+            event: r.data.liveData.event.filter(f => (touchEventTypeIds.includes(f.typeId) || (f.typeId == 4 && f.outcome == 1)))
           });
         });
       }).catch(err => {console.log(err)})
-
       const rs = data.map(d => {
         const event = dataEvents.find(f => (f.id == d.matchInfo.id));
         if(d.liveData.goal)
@@ -203,7 +207,7 @@ export class OptaService {
     _rt: "b",
     _fmt: "json",
     prsn:personUUID,
-    type:"1,2,3,7,8,10,11,12,13,14,15,16,41,42,50,54,61,73,74"
+    type: touchEventTypeIds.toString()
   };
     return await axios.get(url, {
       params
@@ -212,7 +216,6 @@ export class OptaService {
         throw new ApolloError('Get Match Events MA3 Fail', 'get_match_event_ma3_failed');
       }
       const d = response.data;
-
       return {
         id: d.matchInfo.id,
         date: d.matchInfo.date,
@@ -241,4 +244,100 @@ export class OptaService {
       throw new ApolloError('Get Match Events MA3 Fail', 'get_match_event_ma3_failed');
     };
   }  
+
+  async delay(milliseconds) {
+    return new Promise(ok => setTimeout(ok, milliseconds));
+  }
+
+  async rateLimitedRequests (params) {
+    let results = [];
+
+    while (params.length > 0) {
+        let batch = [];
+        let startTime = Date.now();
+
+        for (let i=0; i<10; i++) {
+            let thisParam = params.pop();
+            if (thisParam) {
+                // batch.push(myRequest(thisParam.item));
+            }
+        }
+
+        results = results.concat(await Promise.all(batch));
+
+        let endTime = Date.now();
+        let requestTime = endTime - startTime;
+        let delayTime = ONE_SECOND - requestTime;
+
+        if (delayTime > 0) {
+            await this.delay(delayTime);
+        }
+    }
+
+    return results;
+}
+
+  async getNFTMA3Events(input: FixturesAndResultsArgs){
+    const myNFTOptaIds = ['atzboo800gv7gic2rgvgo0kq1', '8qwpdf5jof7o6yy47v6iv11hx', '4hmivvhmplqof776e9tbqg251'];
+    const goalData: any[] = [];
+
+    
+      myNFTOptaIds.forEach(async (id) => {
+      const matchData = await this.getFixturesAndResults(input, id);
+      const data = matchData.match;
+      data.forEach(d => {
+        d.goal.forEach(g => {
+          if(g.assistPlayerTouch || g.scorerPlayerTouch){
+            console.log(g);
+            goalData.push({
+              fixtureId: data.id,
+              goal: data.goal ? data.goal.filter(g => myNFTOptaIds.includes(g.scorerId) || myNFTOptaIds.includes(g.assistPlayerId)) : []
+            });
+          }          
+        });        
+      });
+    })
+    
+    // const mockRs3 = await this.getFixturesAndResults(input, myNFTOptaIds[2]);
+    // const matchData3 = mockRs3.match;      
+    // matchData3.forEach(data => {
+    //   data.goal.forEach(g => {
+    //     if(g.assistPlayerTouch || g.scorerPlayerTouch ){
+    //       goalData.push({
+    //         fixtureId: data.id,
+    //         goal: data.goal.filter(g => myNFTOptaIds.includes(g.scorerId) || myNFTOptaIds.includes(g.assistPlayerId))
+    //       });
+    //     }          
+    //   });        
+    // });
+    const result = uniqBy(goalData, 'fixtureId');
+    const rs: MA3Model[] = result.map(r => {
+      const goal = r.goal;
+      const matchGoalData: MatchEventGoal[] = goal.map(g=> {
+        return {
+          periodId: g.periodId ?? '',
+          timeMin: g.timeMin ?? '',
+          timeMinSec: g.timeMinSec ?? '',
+          lastUpdated: g.lastUpdated ?? '',
+          timestamp: g.timestamp ?? '',
+          type: g.type ?? '',
+          optaEventId: g.optaEventId ?? '',
+          homeScore: g.homeScore ?? '',
+          awayScore: g.awayScore ?? '',
+          contestantId: g.contestantId ?? '',
+          assistPlayerId: g.assistPlayerId ?? '',
+          assistPlayerName: g.assistPlayerName ?? '',
+          assistPlayerTouch: g.assistPlayerTouch ?? '',
+          scorerId: g.scorerId ?? '',
+          scorerName: g.scorerName ?? '',
+          scorerPlayerTouch: g.scorerPlayerTouch ?? ''
+        }
+      })
+      return {
+        fixtureId: r.fixtureId,
+        goal: matchGoalData
+      }
+    })
+    return rs;
+  }
 }

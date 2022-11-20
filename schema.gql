@@ -181,6 +181,8 @@ type MatchEventGoal {
   optaEventId: String
   homeScore: Float
   awayScore: Float
+  assistPlayerTouch: Float
+  scorerPlayerTouch: Float
 }
 
 type MatchEventModel {
@@ -217,6 +219,11 @@ type MatchEventMA3Model {
   description: String
   contestant: [MatchContestantModel!]
   event: [MatchEventEventModel!]
+}
+
+type MA3Model {
+  fixtureId: String
+  goal: [MatchEventGoal!]
 }
 
 """Club"""
@@ -288,6 +295,7 @@ type PlayerNft implements Node {
   id: ID!
   tokenId: String
   rewardCode: Float
+  transactionHash: String
   walletAddress: String
   playerId: String
   createdAt: DateTime!
@@ -337,6 +345,7 @@ type Query {
   getFixturesAndResults(status: FixtureStatus!, mtMDt: String!): FixturesModelAndResultsModel
   getMatchEvents(fixtureId: String!): MatchEventModel
   getMatchEventsMA3: MatchEventMA3Model
+  getNFTMA3Events(status: FixtureStatus!, mtMDt: String!): [MA3Model!]
 
   """Require `LIST_USER` permission"""
   users(limit: Int = 15, page: Int = 1, filters: [JSONObject!], sort: SortInput, s: String): UserConnection
@@ -362,7 +371,7 @@ input SortInput {
 type Mutation {
   """Create user by wallet address"""
   createUser(input: NewUserWalletInput!): User
-  genPlayerNft(walletAddress: String!, type: PlayerTier!, tokenId: String!): PlayerNft
+  genPlayerNft(walletAddress: String!, type: PlayerTier!, tokenId: String!, transactionHash: String!): PlayerNft
   generateAkshunStoreSignature(walletAddress: String!): SinatureResponse
 }
 
