@@ -321,6 +321,29 @@ type PlayerNft implements Node {
   player: Player
 }
 
+"""Reward"""
+type Reward implements Node {
+  id: ID!
+  rewardAmount: Float
+  rewardType: RewardType
+  transactionId: String
+  tokenId: String
+  status: RewardStatus
+  walletAddress: String
+  playerNftTokenId: String
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  playerNft: Player
+}
+
+enum RewardType {
+  Touch
+}
+
+enum RewardStatus {
+  Completed
+}
+
 type User implements Node {
   id: ID!
   walletAddress: String
@@ -333,19 +356,6 @@ type User implements Node {
 type UserConnection {
   items: [User!]
   meta: BasePaginationMeta!
-}
-
-"""Reward"""
-type Reward implements Node {
-  id: ID!
-  rewardAmount: Float
-  rewardType: RewardType
-  walletAddress: String!
-  tokenId: String!
-}
-
-enum RewardType {
-  Touch
 }
 
 type SinatureResponse {
@@ -372,7 +382,8 @@ type Query {
   getPlayersByWallet(walletAddress: String!): [Player!]
   generatePlayer: [Player!]
   getPlayerNftsByWallet(walletAddress: String!): [PlayerNft!]
-  getRewardByWalledAndType(walletAddress: String!, rewardType: RewardType): Reward!
+  getRewardByWallet(walletAddress: String!): [Reward!]!
+  getRewardByWalletAndType(walletAddress: String!, rewardType: RewardType): Reward!
 }
 
 """

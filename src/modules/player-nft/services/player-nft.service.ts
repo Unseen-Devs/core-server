@@ -15,6 +15,16 @@ export class PlayerNftService {
     private readonly playerNftRepository: PlayerNftRepository,
   ) {}
 
+  async findOne(tokenId: string) {
+    try {
+      return await this.playerNftRepository.findOne({
+        where: { tokenId },
+      });
+    } catch (error) {
+      throw new ApolloError('Get PlayerNft Fail', 'get_player_Nft_failed');
+    }
+  }
+
   async findByWallet(walletAddress: string) {
     try {
       return await this.playerNftRepository
@@ -59,7 +69,7 @@ export class PlayerNftService {
         }
         return random;
       }
-      
+
       const createData = await this.playerNftRepository.create({
         playerId,
         walletAddress,
@@ -69,7 +79,6 @@ export class PlayerNftService {
       });
       return await this.playerNftRepository.save(createData);
     } catch (error) {
-      console.log('error', error);
       throw new ApolloError('Get Player Fail', 'get_player_failed');
     }
   }

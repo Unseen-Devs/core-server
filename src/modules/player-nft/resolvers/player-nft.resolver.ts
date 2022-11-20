@@ -43,7 +43,6 @@ export class PlayerNftResolver {
   async player(@Parent() playerNft: PlayerNftEntity) {
     const { playerId } = playerNft;
     return await this.playerService.findOne(playerId);
-    // return this.playerDataLoader.load(playerId);
   }
 
   @Mutation(() => SinatureResponse, {

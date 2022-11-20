@@ -6,3 +6,11 @@ export enum RewardTypeEnum {
 registerEnumType(RewardTypeEnum, {
   name: 'RewardType'
 })
+
+export enum RewardStatusEnum {
+  Completed = 'COMPLETED'
+}
+
+registerEnumType(RewardStatusEnum, {
+  name: 'RewardStatus'
+})
