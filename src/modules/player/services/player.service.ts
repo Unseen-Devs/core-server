@@ -17,7 +17,7 @@ export class PlayerService {
   ) {}
 
   async findOne(id: string) {
-    try {
+    try {      
       return await this.playerRepository.findOne(id, {
         relations: ['club', 'events'],
       });

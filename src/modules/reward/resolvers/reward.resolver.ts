@@ -23,14 +23,13 @@ export class RewardResolver {
     return this.rewardService.getBywalletAddress(walletAddress);
   }
 
-  @ResolveField(() => PlayerEntity, {
+  @ResolveField(() => PlayerNftEntity, {
     name: 'playerNft',
     nullable: true,
   })
   async playerNft(@Parent() reward: RewardEntity) {
     const { playerNftTokenId } = reward;
-    const { playId } : any = await this.playerNftService.findOne(playerNftTokenId);    
-    return await this.playerService.findOne(playId);
+    return await this.playerNftService.findOne(playerNftTokenId);    
   }
 
   @Query(() => RewardEntity, { name: 'getRewardByWalletAndType' })
@@ -38,4 +37,17 @@ export class RewardResolver {
     const { walletAddress, rewardType } = args;
     return this.rewardService.getRewardByWalletAndType(walletAddress, rewardType);
   }
+
+  // @Mutation(() => PlayerNftEntity, {
+  //   name: 'creatReward',
+  //   nullable: true,
+  // })
+  // async genPlayerNft(
+  //   @Args('walletAddress', { type: () => String }) walletAddress: string,
+  //   @Args('type', { type: () => PlayerTierEnum }) type: PlayerTierEnum,
+  //   @Args('tokenId', { type: () => String }) tokenId: string,
+  //   @Args('transactionHash', { type: () => String }) transactionHash: string,
+  // ) {
+  //   return await this.playerNftService.genPlayerNft(walletAddress, type, tokenId, transactionHash);
+  // }
 }
