@@ -382,8 +382,9 @@ type Query {
   getPlayersByWallet(walletAddress: String!): [Player!]
   generatePlayer: [Player!]
   getPlayerNftsByWallet(walletAddress: String!): [PlayerNft!]
-  getRewardByWallet(walletAddress: String!): [Reward!]!
+  getRewardsByWallet(walletAddress: String!): [Reward!]!
   getRewardByWalletAndType(walletAddress: String!, rewardType: RewardType): Reward!
+  getReward(id: String!): Reward!
 }
 
 """

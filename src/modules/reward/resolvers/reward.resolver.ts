@@ -18,7 +18,7 @@ export class RewardResolver {
     private readonly playerService: PlayerService,
   ) {}
 
-  @Query(() => [RewardEntity], { name: 'getRewardByWallet' })
+  @Query(() => [RewardEntity], { name: 'getRewardsByWallet' })
   getBywalletAddress(@Args('walletAddress', { type: () => String }) walletAddress: string) {
     return this.rewardService.getBywalletAddress(walletAddress);
   }
@@ -37,6 +37,12 @@ export class RewardResolver {
     const { walletAddress, rewardType } = args;
     return this.rewardService.getRewardByWalletAndType(walletAddress, rewardType);
   }
+
+  @Query(() => RewardEntity, { name: 'getReward' })
+  getDetailReward(@Args('id', { type: () => String }) id: string) {
+    return this.rewardService.getDetailReward(id);
+  }
+  
 
   // @Mutation(() => PlayerNftEntity, {
   //   name: 'creatReward',

@@ -14,6 +14,15 @@ export class RewardService {
     })
   }
 
+
+  async getDetailReward(id: string) {
+    return await this.rewardRepository.findOne({
+      where: {
+        id
+      }
+    })
+  }
+
   async getRewardByWalletAndType(walletAddress: string, type?: RewardTypeEnum) {
     const rewardType = type || RewardTypeEnum.Touch;
     return await this.rewardRepository.findOne({
