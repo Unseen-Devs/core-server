@@ -16,6 +16,7 @@ import { UsersModule } from './modules/users/users.module';
 import { PlayerNftModule } from './modules/player-nft/player-nft.module';
 import { ClubModule } from './modules/club/club.module';
 import { EventModule } from './modules/event/event.module';
+import { EventHistoryModule } from './modules/event-history/event-history.module';
 
 @Module({
   imports: [
@@ -46,6 +47,7 @@ import { EventModule } from './modules/event/event.module';
     RewardModule,
     ClubModule,
     EventModule,
+    EventHistoryModule,
   ],
 })
 export class AppModule implements NestModule {

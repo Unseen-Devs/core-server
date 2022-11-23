@@ -12,5 +12,6 @@ import { ClubRepository } from '../club/repositories/club.repository';
 @Module({
   imports: [TypeOrmModule.forFeature([PlayerEntity, PlayerRepository, UserRepository, ClubRepository])],
   providers: [PlayerResolver, PlayerService, PlayerDataLoader, ClubDataLoader],
+  exports: [PlayerService]
 })
 export class PlayerModule {}

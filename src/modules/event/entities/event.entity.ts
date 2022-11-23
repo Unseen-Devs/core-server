@@ -1,7 +1,6 @@
 import { ObjectType, Field, Int, ID } from '@nestjs/graphql';
 import { Node, PaginationBase } from 'src/graphql/types/common.interface.entity';
 import { snowflake } from 'src/helpers/common';
-import { EventTypeEnum } from '../enums/event.enum';
 import {
   Column,
   CreateDateColumn,
@@ -9,37 +8,10 @@ import {
   Entity,
   UpdateDateColumn,
   BaseEntity,
-  ManyToMany,
-  JoinTable,
-  OneToMany,
   ManyToOne,
   JoinColumn,
 } from 'typeorm';
 import { PlayerEntity } from 'src/modules/player/entities/player.entity';
-
-@ObjectType('EventInfo')
-export class EventInfo {
-  @Field(() => String)
-  eventId: string;
-
-  @Field(() => String)
-  typeId: string;
-
-  @Field(() => Int)
-  timeMin: number;
-
-  @Field(() => Int)
-  timeSec: number;
-
-  @Field(() => Int)
-  outcome: number;
-
-  @Field(() => Int)
-  assist: number;
-
-  @Field(() => Int)
-  touch: number;
-}
 
 @ObjectType('Event', {
   description: 'Event',
@@ -58,21 +30,51 @@ export class EventEntity extends BaseEntity implements Node {
 
   @Field({ nullable: true })
   @Column({ length: 100 })
-  fixtureUuid: string;
+  fixtureId: string;
 
-  @Field(() => EventInfo, { nullable: true })
-  @Column({ type: 'json' })
-  eventInfo: EventInfo;
+  @Field({nullable: true})
+  @Column({nullable: true})
+  playerId: string;
+
+  @Field({nullable: true})
+  @Column({nullable: true})
+  playerOptaId: string;
 
   @Field({ nullable: true })
-  @Column({ type: 'int' })
+  @Column({ type: 'int', nullable: true })
+  gameweek: number;
+
+  @Field({ nullable: true })
+  @Column({ nullable: true })
+  date: string;
+
+  @Field({ nullable: true })
+  @Column({ nullable: true })
+  time: string;
+
+  @Field({ nullable: true })
+  @Column({ type: 'int', default: 0 })
   totalTouch: number;
 
   @Field({ nullable: true })
-  @Column({ length: 300 })
+  @Column({ type: 'int', array: true, default: [] })
+  scorerTouches: number[];
+
+  @Field({ nullable: true })
+  @Column({ type: 'int', array: true, default: [] })
+  assistTouches: number[];
+
+  @Field({ nullable: true })
+  @Column({ length: 300, nullable: true })
   description: string;
 
-  @Field(() => PlayerEntity)
+  @CreateDateColumn()
+  createdAt: Date;
+
+  @UpdateDateColumn()
+  updatedAt: Date;
+
+  @Field(() => PlayerEntity, { nullable: true})
   @ManyToOne(() => PlayerEntity, (player) => player.events)
   @JoinColumn({ name: 'playerId' })
   player: PlayerEntity;

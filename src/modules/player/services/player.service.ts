@@ -2,22 +2,20 @@ import { Injectable } from '@nestjs/common';
 import { ApolloError } from 'apollo-server-express';
 import { PlayerRepository } from '../repositories/player.repository';
 import { PlayerArgs } from '../dto/player.args';
-import { PlayerEntity } from '../entities/player.entity';
 import { getConnection } from 'typeorm';
-import { UserRepository } from '../../users/repositories/users.repository';
 import { PlayerNftEntity } from '../../player-nft/entities/player-nft.entity';
 import { ClubRepository } from 'src/modules/club/repositories/club.repository';
+import { PlayerEntity } from '../entities/player.entity';
 
 @Injectable()
 export class PlayerService {
   constructor(
-    private readonly userRepository: UserRepository,
     private readonly playerRepository: PlayerRepository,
     private readonly clubRepository: ClubRepository,
   ) {}
 
   async findOne(id: string) {
-    try {
+    try {      
       return await this.playerRepository.findOne(id, {
         relations: ['club', 'events'],
       });
@@ -73,9 +71,7 @@ export class PlayerService {
   }
 
   async generatePlayer() {
-    const players: any[] = [
-      
-    ];
+    const players: any[] = [];
 
     const queryRunner = getConnection().createQueryRunner();
 
@@ -107,6 +103,10 @@ export class PlayerService {
     const data = await this.playerRepository
         .createQueryBuilder('player')
         .getMany();
-    // const optaIds = data.map(d => d.optaId)
+    return data.length ? data.map(d => d.optaId) : [];
+  }
+
+  async findAll(){
+    return await this.playerRepository.find();
   }
 }

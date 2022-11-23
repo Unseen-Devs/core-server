@@ -160,3 +160,43 @@ export class MA3Model {
     @Field(()=> [MatchEventGoal], { nullable : true, defaultValue: []})
     goal: MatchEventGoal[];
 }
+
+@ObjectType()
+export class MA3Precondition {
+    @Field({nullable: true})
+    fixtureId: string;
+    @Field({nullable: true})
+    date: string;
+    @Field({nullable: true})
+    time: string;
+    @Field(()=> Int, {nullable: true})
+    gameweek: number;
+    @Field({nullable: true})
+    playerIds: string[];
+    @Field({nullable: true})
+    goal: any[];
+    @Field({nullable: true}) 
+    contestant: any[]
+  }
+  
+  @ObjectType()
+  export class PlayerTouchModel {
+    @Field({nullable: true})
+    fixtureId: string;
+    @Field({nullable: true})
+    playerOptaId: string;
+    @Field({nullable: true})
+    playerId: string | null;
+    @Field({nullable: true})
+    date: string;
+    @Field({nullable: true})
+    time: string;
+    @Field(()=> Int, {nullable: true})
+    gameweek: number;
+    @Field({nullable: true})
+    totalTouches: number;
+    @Field({nullable: true})
+    scorerTouches: number[];
+    @Field({nullable: true})
+    assistTouches: number[]
+  }

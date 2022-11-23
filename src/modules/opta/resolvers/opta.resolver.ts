@@ -3,8 +3,8 @@ import { Opta } from '../entities/opta.entity';
 import { OptaService } from '../services/opta.service';
 import { TournamentCalendarModel } from '../entities/opta_model.entity';
 import { FixturesModelAndResultsModel, TournamentScheduleModel } from '../entities/tournament.entity';
-import { MatchEventModel, MatchEventMA3Model, MA3Model } from '../entities/match_event_model.entity';
 import { FixturesAndResultsArgs } from '../dto/opta.args';
+import { PlayerTouchModel } from '../entities/match_event_model.entity';
 
 @Resolver(() => Opta)
 export class OptaResolver {
@@ -32,24 +32,10 @@ export class OptaResolver {
     return await this.optaService.getFixturesAndResults(input);
   }
 
-  @Query(() => MatchEventModel, {
-    nullable: true,
-  })
-  async getMatchEvents(@Args('fixtureId', { type: () => String }) fixtureId: string) {
-    return await this.optaService.getMatchEvents(fixtureId);
-  }
-
-  @Query(() => MatchEventMA3Model, {
-    nullable: true
-  })
-  async getMatchEventsMA3() {
-    return await this.optaService.getMatchEventsMA3("7ly4fqhihqbfm8nwseibc97h0", "bijr1ghojrxc61se7ebt72f9x");
-  }
-
-  @Query(() => [MA3Model], {
+  @Query(() => [PlayerTouchModel], {
     nullable: true
   })
   async getNFTMA3Events(@Args() input: FixturesAndResultsArgs) {
-    return await this.optaService.getNFTMA3Events(input);
+    return await this.optaService.getPastMatchesEvents(input);
   }
 }

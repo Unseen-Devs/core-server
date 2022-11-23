@@ -37,6 +37,105 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 """
 scalar DateTime
 
+"""Club"""
+type Club implements Node {
+  id: ID!
+  code: String!
+  name: String!
+  optaId: String
+  players: [Player!]!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+"""Event"""
+type Event implements Node {
+  id: ID!
+  fixtureId: String
+  playerId: String
+  playerOptaId: String
+  gameweek: Float
+  date: String
+  time: String
+  totalTouch: Float
+  scorerTouches: [Float!]
+  assistTouches: [Float!]
+  description: String
+  player: Player
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+"""Player"""
+type Player implements Node {
+  id: ID!
+  playerId: String
+  contestantId: String
+  firstName: String
+  lastName: String
+  shortFirstName: String
+  shortLastName: String
+  shirtPlayer: String
+  matchName: String
+  type: PlayerTier
+  shirtNumber: Int
+  position: String
+  positionSide: String
+  formationPlace: String
+  touch: Float
+  optaId: String
+  club: Club!
+  events: [Event!]!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+enum PlayerTier {
+  TIER1
+  TIER2
+}
+
+type PlayerConnection {
+  items: [Player!]
+  meta: BasePaginationMeta!
+}
+
+type EventHistoryInfo {
+  eventId: String!
+  typeId: String!
+  timeMin: Int!
+  timeSec: Int!
+  outcome: Int!
+  assist: Int!
+  touch: Int!
+}
+
+"""Event History"""
+type EventHistory implements Node {
+  id: ID!
+  fixtureUuid: String
+  eventInfo: EventHistoryInfo
+  totalTouch: Float
+  playerNftId: String
+  walletAddress: String
+  description: String
+  playerNFT: PlayerNft!
+}
+
+"""PlayerNft"""
+type PlayerNft implements Node {
+  id: ID!
+  tokenId: String
+  rewardCode: Float
+  transactionHash: String
+  walletAddress: String
+  playerId: String
+  eventHistory: [EventHistory!]!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  player: Player
+}
+
 type TournamentCalendarInfo {
   id: String
   includesVenues: String
@@ -185,12 +284,6 @@ type MatchEventGoal {
   scorerPlayerTouch: Float
 }
 
-type MatchEventModel {
-  description: String
-  contestant: [MatchContestantModel!]
-  goal: [MatchEventGoal!]
-}
-
 type MatchEventQualifierModel {
   id: Float
   qualifierId: Float
@@ -215,92 +308,16 @@ type MatchEventEventModel {
   qualifier: [MatchEventQualifierModel!]
 }
 
-type MatchEventMA3Model {
-  description: String
-  contestant: [MatchContestantModel!]
-  event: [MatchEventEventModel!]
-}
-
-type MA3Model {
+type PlayerTouchModel {
   fixtureId: String
-  goal: [MatchEventGoal!]
-}
-
-"""Club"""
-type Club implements Node {
-  id: ID!
-  code: String!
-  name: String!
-  players: [Player!]!
-  createdAt: DateTime!
-  updatedAt: DateTime!
-}
-
-type EventInfo {
-  eventId: String!
-  typeId: String!
-  timeMin: Int!
-  timeSec: Int!
-  outcome: Int!
-  assist: Int!
-  touch: Int!
-}
-
-"""Event"""
-type Event implements Node {
-  id: ID!
-  fixtureUuid: String
-  eventInfo: EventInfo
-  totalTouch: Float
-  description: String
-  player: Player!
-}
-
-"""Player"""
-type Player implements Node {
-  id: ID!
+  playerOptaId: String
   playerId: String
-  contestantId: String
-  firstName: String
-  lastName: String
-  shortFirstName: String
-  shortLastName: String
-  shirtPlayer: String
-  matchName: String
-  type: PlayerTier
-  shirtNumber: Int
-  position: String
-  positionSide: String
-  formationPlace: String
-  touch: Float
-  club: Club!
-  events: [Event!]!
-  createdAt: DateTime!
-  updatedAt: DateTime!
-  player: Player
-}
-
-enum PlayerTier {
-  TIER1
-  TIER2
-}
-
-type PlayerConnection {
-  items: [Player!]
-  meta: BasePaginationMeta!
-}
-
-"""PlayerNft"""
-type PlayerNft implements Node {
-  id: ID!
-  tokenId: String
-  rewardCode: Float
-  transactionHash: String
-  walletAddress: String
-  playerId: String
-  createdAt: DateTime!
-  updatedAt: DateTime!
-  player: Player
+  date: String
+  time: String
+  gameweek: Int
+  totalTouches: Float
+  scorerTouches: [Float!]
+  assistTouches: [Float!]
 }
 
 type User implements Node {
@@ -322,12 +339,22 @@ type Reward implements Node {
   id: ID!
   rewardAmount: Float
   rewardType: RewardType
-  walletAddress: String!
-  tokenId: String!
+  transactionId: String
+  tokenId: String
+  status: RewardStatus
+  walletAddress: String
+  playerNftTokenId: String
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  playerNft: PlayerNft
 }
 
 enum RewardType {
   Touch
+}
+
+enum RewardStatus {
+  Completed
 }
 
 type SinatureResponse {
@@ -343,19 +370,18 @@ type Query {
   getTournamentCalendar: TournamentCalendarModel
   getTournamentSchedule: TournamentScheduleModel
   getFixturesAndResults(status: FixtureStatus!, mtMDt: String!): FixturesModelAndResultsModel
-  getMatchEvents(fixtureId: String!): MatchEventModel
-  getMatchEventsMA3: MatchEventMA3Model
-  getNFTMA3Events(status: FixtureStatus!, mtMDt: String!): [MA3Model!]
-
-  """Require `LIST_USER` permission"""
-  users(limit: Int = 15, page: Int = 1, filters: [JSONObject!], sort: SortInput, s: String): UserConnection
+  getNFTMA3Events(status: FixtureStatus!, mtMDt: String!): [PlayerTouchModel!]
   getPlayers(limit: Int = 15, page: Int = 1, filters: [JSONObject!], walletAddress: String): PlayerConnection
   getPlayer(id: String!): Player
   getPlayerByWallet(walletAddress: String!, id: String!): Player
   getPlayersByWallet(walletAddress: String!): [Player!]
-  generatePlayer: [Player!]
+
+  """Require `LIST_USER` permission"""
+  users(limit: Int = 15, page: Int = 1, filters: [JSONObject!], sort: SortInput, s: String): UserConnection
   getPlayerNftsByWallet(walletAddress: String!): [PlayerNft!]
-  getRewardByWalledAndType(walletAddress: String!, rewardType: RewardType): Reward!
+  getRewardsByWallet(walletAddress: String!): [Reward!]!
+  getRewardByWalletAndType(walletAddress: String!, rewardType: RewardType): Reward!
+  getReward(id: String!): Reward!
 }
 
 """

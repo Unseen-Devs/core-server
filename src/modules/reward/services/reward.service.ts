@@ -9,12 +9,21 @@ export class RewardService {
   async getBywalletAddress(walletAddress: string) {
     return await this.rewardRepository.find({
       where: {
-        walletAddress
+        walletAddress: walletAddress.toLocaleLowerCase()
       }
     })
   }
 
-  async getRewardByWalledAndType(walletAddress: string, type?: RewardTypeEnum) {
+
+  async getDetailReward(id: string) {
+    return await this.rewardRepository.findOne({
+      where: {
+        id
+      }
+    })
+  }
+
+  async getRewardByWalletAndType(walletAddress: string, type?: RewardTypeEnum) {
     const rewardType = type || RewardTypeEnum.Touch;
     return await this.rewardRepository.findOne({
       where: {

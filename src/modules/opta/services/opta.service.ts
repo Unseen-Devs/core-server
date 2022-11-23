@@ -4,19 +4,18 @@ import axios from 'axios';
 import { TournamentCalendarModel } from '../entities/opta_model.entity';
 import { TournamentScheduleDetailModel } from '../entities/tournament.entity';
 import { FixturesAndResultsArgs } from '../dto/opta.args';
-import { uniqBy } from 'lodash'
-import { MA3Model, MatchEventGoal } from '../entities/match_event_model.entity';
-import { PlayerNftRepository } from 'src/modules/player-nft/repositories/player-nft.repository';
+import { uniq } from 'lodash'
+import { PlayerService } from 'src/modules/player/services/player.service';
+import { MA3Precondition, PlayerTouchModel } from '../entities/match_event_model.entity';
 
 const OPTA_OUTLET_AUTH_KEY = process.env.OPTA_OUTLET_AUTH_KEY;
 const OPTA_BASE_URL = process.env.OPTA_BASE_URL;
 const touchEventTypeIds = [1,2,3,7,8,10,11,12,13,14,15,16,41,42,50,54,61,73,74];
-const ONE_SECOND = 1000;
 
 @Injectable()
 export class OptaService {
   constructor(
-    private readonly playerNftRepository: PlayerNftRepository
+    private readonly playerService: PlayerService
   ) {}
 
   async getTournamentCalendar() {
@@ -79,6 +78,38 @@ export class OptaService {
     });
   }
 
+  async getFixtures(input: FixturesAndResultsArgs){
+    const tournamentCalendar = await this.getTournamentCalendar();
+    if(!tournamentCalendar){
+      throw new ApolloError('Get Tournament Calendar Fail', 'get_tournament_calendar_failed');
+    }
+    const tournamentCalendarId = tournamentCalendar.competition[0]?.tournamentCalendar[0]?.id;
+    const url = `${OPTA_BASE_URL}/match/${OPTA_OUTLET_AUTH_KEY}\?tmcl=${tournamentCalendarId}`;
+    const {
+      status,
+      mtMDt
+    } = input;
+    return await axios.get(url, {
+      params: {
+        _rt: "b",
+        _fmt: "json",
+        _ordSrt: "asc",
+        live: "yes",
+        lineups: "yes",
+        status: status,
+        "mt.mDt": mtMDt,//[YYYY-MM-DDTHH:MM:SSZ TO YYYY-MM-DDTHH:MM:SSZ]
+      }
+    }).then(async (response) => {
+      if(response.status !== 200){
+        throw new ApolloError('Get Fixtures and Results Fail', 'get_tournament_schedule_failed');
+      }
+      return response.data.match;
+    }).catch((error) => {
+      console.log('error', error);
+      throw new ApolloError('Get Fixtures and Results Fail', 'get_fixtures_results_failed');
+    });
+  }
+
   async getFixturesAndResults(input: FixturesAndResultsArgs, playerOptaId?: string){
     const tournamentCalendar = await this.getTournamentCalendar();
     if(!tournamentCalendar){
@@ -106,7 +137,7 @@ export class OptaService {
       }
       const data = response.data.match;
       // Touch
-      const prsn = playerOptaId ?? '4jyrztlaueae7eg18kuvxa489';
+      const prsn = playerOptaId ?? 'atzboo800gv7gic2rgvgo0kq1';
       const promises: Promise<any>[] = [];
       data.forEach(d => {
         const urlTouch = `${OPTA_BASE_URL}/matchevent/${OPTA_OUTLET_AUTH_KEY}/${d.matchInfo.id}`;
@@ -124,7 +155,8 @@ export class OptaService {
               }
             }));
         }
-      });
+      });      
+      
       const dataEvents: any[] = [];
       await Promise.all(promises).then(res => {
         res.forEach(r => {
@@ -166,178 +198,89 @@ export class OptaService {
       console.log('error', error);
       throw new ApolloError('Get Fixtures and Results Fail', 'get_fixtures_results_failed');
     });
-  }
-  
-  async getMatchEvents(fixtureId: string){
-    const url = `${OPTA_BASE_URL}/matchstats/${OPTA_OUTLET_AUTH_KEY}/${fixtureId}\?_rt\=b\&_fmt\=json`;
-    return await axios.get(url).then((response) => {
-      if(response.status !== 200){
-        throw new ApolloError('Get Match Stats Fail', 'get_match_event_failed');
-      }
-      const data = response.data;
-      const contestant = data.matchInfo.contestant;
-      const goal = data.liveData.goal;
-      return {
-        description: data.matchInfo.description,
-        contestant: contestant.map(c =>  {
-          return {
-            shortName: c.shortName
-          }
-        }),
-        goal: goal.map(g => {
-          return {
-            timeMin: g.timeMin,
-            timeMinSec: g.timeMinSec,
-            scorerName: g.scorerName,
-            assistPlayerName: g.assistPlayerName?? '',
+  } 
+
+  async getPreConditionsMatchEvents(input: FixturesAndResultsArgs){
+    const getFixtures = await this.getFixtures(input);
+    const conditions: MA3Precondition[] = [];
+    const playerOptaIds = await this.playerService.getAllPlayerOptaId();
+    
+    getFixtures.forEach(d => {
+      d.liveData.lineUp.forEach(l => {
+        const playerIds: string[] = [];
+        l.player.forEach(p => {
+          if(playerOptaIds.includes(p.playerId)){
+            playerIds.push(p.playerId);
           }
         })
-      };
-    }).catch((error) => {
-      console.log('error', error);
-      throw new ApolloError('Get Match Stats Fail', 'get_match_event_failed');
-    });
-  }
-
- async getMatchEventsMA3(fixtureId:string, personUUID: string) {
-  try {
-    const url = `${OPTA_BASE_URL}/matchevent/${OPTA_OUTLET_AUTH_KEY}/${fixtureId}`;
-
-  const params = {
-    _rt: "b",
-    _fmt: "json",
-    prsn:personUUID,
-    type: touchEventTypeIds.toString()
-  };
-    return await axios.get(url, {
-      params
-    }).then((response) => {
-      if(response.status !== 200){
-        throw new ApolloError('Get Match Events MA3 Fail', 'get_match_event_ma3_failed');
-      }
-      const d = response.data;
-      return {
-        id: d.matchInfo.id,
-        date: d.matchInfo.date,
-        time: d.matchInfo.time,
-        contestant: d.matchInfo.contestant,
-        matchStatus: d.liveData.matchDetails.matchStatus,
-        scores: d.liveData.matchDetails.scores,
-        event: d.liveData.event,
-      }
-      // const rs = data.map(d => {
-      //   console.log(d);
-      //   return {
-      //     id: d.matchInfo.id,
-      //     date: d.matchInfo.date,
-      //     time: d.matchInfo.time,
-      //     contestant: d.matchInfo.contestant,
-      //     matchStatus: d.liveData.matchDetails.matchStatus,
-      //     scores: d.liveData.matchDetails.scores,
-      //     event: d.liveData.event,
-      //   }
-      // })
-      // return { match: rs };
-    });
-  } catch (error) {
-    console.log('error', error);
-      throw new ApolloError('Get Match Events MA3 Fail', 'get_match_event_ma3_failed');
-    };
-  }  
-
-  async delay(milliseconds) {
-    return new Promise(ok => setTimeout(ok, milliseconds));
-  }
-
-  async rateLimitedRequests (params) {
-    let results = [];
-
-    while (params.length > 0) {
-        let batch = [];
-        let startTime = Date.now();
-
-        for (let i=0; i<10; i++) {
-            let thisParam = params.pop();
-            if (thisParam) {
-                // batch.push(myRequest(thisParam.item));
-            }
-        }
-
-        results = results.concat(await Promise.all(batch));
-
-        let endTime = Date.now();
-        let requestTime = endTime - startTime;
-        let delayTime = ONE_SECOND - requestTime;
-
-        if (delayTime > 0) {
-            await this.delay(delayTime);
-        }
-    }
-
-    return results;
-}
-
-  async getNFTMA3Events(input: FixturesAndResultsArgs){
-    const myNFTOptaIds = ['atzboo800gv7gic2rgvgo0kq1', '8qwpdf5jof7o6yy47v6iv11hx', '4hmivvhmplqof776e9tbqg251'];
-    const goalData: any[] = [];
-
-    
-      myNFTOptaIds.forEach(async (id) => {
-      const matchData = await this.getFixturesAndResults(input, id);
-      const data = matchData.match;
-      data.forEach(d => {
-        d.goal.forEach(g => {
-          if(g.assistPlayerTouch || g.scorerPlayerTouch){
-            console.log(g);
-            goalData.push({
-              fixtureId: data.id,
-              goal: data.goal ? data.goal.filter(g => myNFTOptaIds.includes(g.scorerId) || myNFTOptaIds.includes(g.assistPlayerId)) : []
-            });
-          }          
-        });        
-      });
-    })
-    
-    // const mockRs3 = await this.getFixturesAndResults(input, myNFTOptaIds[2]);
-    // const matchData3 = mockRs3.match;      
-    // matchData3.forEach(data => {
-    //   data.goal.forEach(g => {
-    //     if(g.assistPlayerTouch || g.scorerPlayerTouch ){
-    //       goalData.push({
-    //         fixtureId: data.id,
-    //         goal: data.goal.filter(g => myNFTOptaIds.includes(g.scorerId) || myNFTOptaIds.includes(g.assistPlayerId))
-    //       });
-    //     }          
-    //   });        
-    // });
-    const result = uniqBy(goalData, 'fixtureId');
-    const rs: MA3Model[] = result.map(r => {
-      const goal = r.goal;
-      const matchGoalData: MatchEventGoal[] = goal.map(g=> {
-        return {
-          periodId: g.periodId ?? '',
-          timeMin: g.timeMin ?? '',
-          timeMinSec: g.timeMinSec ?? '',
-          lastUpdated: g.lastUpdated ?? '',
-          timestamp: g.timestamp ?? '',
-          type: g.type ?? '',
-          optaEventId: g.optaEventId ?? '',
-          homeScore: g.homeScore ?? '',
-          awayScore: g.awayScore ?? '',
-          contestantId: g.contestantId ?? '',
-          assistPlayerId: g.assistPlayerId ?? '',
-          assistPlayerName: g.assistPlayerName ?? '',
-          assistPlayerTouch: g.assistPlayerTouch ?? '',
-          scorerId: g.scorerId ?? '',
-          scorerName: g.scorerName ?? '',
-          scorerPlayerTouch: g.scorerPlayerTouch ?? ''
-        }
+        conditions.push({
+          fixtureId: d.matchInfo.id,
+          date: d.matchInfo.date,
+          time: d.matchInfo.time,
+          gameweek: Number(d.matchInfo.week),
+          playerIds,
+          goal: d.liveData.goal ?? [],
+          contestant: d.matchInfo.contestant
+        })
       })
-      return {
-        fixtureId: r.fixtureId,
-        goal: matchGoalData
-      }
-    })
+    });
+    
+    return conditions;
+  }
+
+  async getPlayerIdFromOptaId(){
+    const players = await this.playerService.findAll();
+    const rs = new Map<string, string>();
+    players.forEach(p => {
+      rs.set(p.optaId ,p.id)
+    });
     return rs;
+  }
+
+  async getPastMatchesEvents(input: FixturesAndResultsArgs){
+    const conditions = await this.getPreConditionsMatchEvents(input);
+    const players = await this.getPlayerIdFromOptaId();
+    const dataEvents: PlayerTouchModel[] = [];
+    for(let condition of conditions) {    
+      const fixtureId = condition.fixtureId;
+      const goal = condition.goal;
+      const playerIds = condition.playerIds;
+      const urlTouch = `${OPTA_BASE_URL}/matchevent/${OPTA_OUTLET_AUTH_KEY}/${fixtureId}`;
+      for (let prsn of playerIds) {
+        await axios.get(urlTouch, {
+          params: {
+            _rt: "b",
+            _fmt: "json",
+            type: touchEventTypeIds.toString(),
+            prsn,
+          }
+        }).then(async (response) => {
+          const touchEvents = response.data.liveData.event.filter(f => (touchEventTypeIds.includes(f.typeId) || (f.typeId == 4 && f.outcome == 1)));
+          const totalTouches = touchEvents.length;
+          const assistTouches: number[] = [];
+          const scorerTouches : number[]= [];
+          goal?.forEach(g =>{ 
+            const assistTouch = touchEvents.findIndex(f => (f.assist == 1 && f.playerId == g.assistPlayerId)) + 1;
+            const scorerTouch = touchEvents.findIndex(f => (f.typeId == 16 && f.playerId == g.scorerId)) + 1
+            if(assistTouch > 0) assistTouches.push(assistTouch);
+            if(scorerTouch > 0) scorerTouches.push(scorerTouch);
+          })
+          
+          const obj = {
+            fixtureId,
+            date: condition.date,
+            time: condition.time,
+            gameweek: condition.gameweek,
+            playerOptaId: prsn,
+            playerId: players.get(prsn) ?? null,
+            totalTouches,
+            scorerTouches: uniq(scorerTouches),
+            assistTouches: uniq(assistTouches)
+          }
+          dataEvents.push(obj);
+        }).catch(err => { });
+      }
+    }
+    return dataEvents;
   }
 }
