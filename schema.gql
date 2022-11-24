@@ -48,28 +48,9 @@ type Club implements Node {
   updatedAt: DateTime!
 }
 
-"""Event"""
-type Event implements Node {
-  id: ID!
-  fixtureId: String
-  playerId: String
-  playerOptaId: String
-  gameweek: Float
-  date: String
-  time: String
-  totalTouch: Float
-  scorerTouches: [Float!]
-  assistTouches: [Float!]
-  description: String
-  player: Player
-  createdAt: DateTime!
-  updatedAt: DateTime!
-}
-
 """Player"""
 type Player implements Node {
   id: ID!
-  playerId: String
   contestantId: String
   firstName: String
   lastName: String
@@ -85,9 +66,9 @@ type Player implements Node {
   touch: Float
   optaId: String
   club: Club!
-  events: [Event!]!
   createdAt: DateTime!
   updatedAt: DateTime!
+  events: [Event!]
 }
 
 enum PlayerTier {
@@ -320,6 +301,24 @@ type PlayerTouchModel {
   assistTouches: [Float!]
 }
 
+"""Event"""
+type Event implements Node {
+  id: ID!
+  fixtureId: String
+  playerId: ID
+  playerOptaId: String
+  gameweek: Float
+  date: String
+  time: String
+  totalTouch: Float
+  scorerTouches: [Float!]!
+  assistTouches: [Float!]!
+  description: String
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  player: Player
+}
+
 type User implements Node {
   id: ID!
   walletAddress: String
@@ -375,6 +374,19 @@ type Query {
   getPlayer(id: String!): Player
   getPlayerByWallet(walletAddress: String!, id: String!): Player
   getPlayersByWallet(walletAddress: String!): [Player!]
+  getEvents(
+    fixtureId: Int
+    gameweek: Int
+    playerId: String
+    playerOptaId: String
+
+    """format YYYY-MM-DDZ"""
+    dateFrom: String
+
+    """format YYYY-MM-DDZ"""
+    dateTo: String
+    time: String
+  ): [Event!]
 
   """Require `LIST_USER` permission"""
   users(limit: Int = 15, page: Int = 1, filters: [JSONObject!], sort: SortInput, s: String): UserConnection
@@ -395,10 +407,17 @@ input SortInput {
 }
 
 type Mutation {
+  createPastEvents(input: FixturesAndResultsDTO!): [Event!]
+
   """Create user by wallet address"""
   createUser(input: NewUserWalletInput!): User
   genPlayerNft(walletAddress: String!, type: PlayerTier!, tokenId: String!, transactionHash: String!): PlayerNft
   generateAkshunStoreSignature(walletAddress: String!): SinatureResponse
+}
+
+input FixturesAndResultsDTO {
+  status: FixtureStatus!
+  mtMDt: String!
 }
 
 input NewUserWalletInput {

@@ -1,25 +1,11 @@
-import { Field, Int, ObjectType } from "@nestjs/graphql";
+import { Field, InputType } from "@nestjs/graphql";
+import { FixtureStatus } from "src/modules/opta/enums/opta.enum";
 
-@ObjectType()
-export class EventArgs{
-    @Field(() => Int)
-    fixtureId?: number
+@InputType()
+export class FixturesAndResultsDTO {
+  @Field(() => FixtureStatus)
+  status: FixtureStatus;
 
-    @Field(() => Int)
-    gameweek?: number
-
-    @Field()
-    playerId?: string
-
-    @Field()
-    playerOptaId?: string
-
-    @Field({description: 'format YYYY-MM-DDZ'})
-    dateFrom?: string
-
-    @Field({description: 'format YYYY-MM-DDZ'})
-    dateTo?: string
-
-    @Field()
-    time?: string
+  @Field(() => String)
+  mtMDt: string
 }

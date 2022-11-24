@@ -2,7 +2,7 @@ import { EntityRepository } from 'typeorm';
 import { CommonRepository } from 'src/modules/common/common.repository';
 import { EventEntity } from '../entities/event.entity';
 import { PlayerTouchModel } from 'src/modules/opta/entities/match_event_model.entity';
-import { EventArgs } from '../dtos/event.dto';
+import { EventArgs } from '../dtos/event.args';
 
 @EntityRepository(EventEntity)
 export class EventRepository extends CommonRepository<EventEntity> {

@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { Opta } from './entities/opta.entity';
 import { OptaRepository } from './repositories/opta.repository';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -7,7 +7,7 @@ import { OptaService } from './services/opta.service';
 import { PlayerModule } from '../player/player.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Opta, OptaRepository]), PlayerModule],
+  imports: [TypeOrmModule.forFeature([Opta, OptaRepository]), forwardRef(() => PlayerModule)],
   providers: [OptaResolver, OptaService],
   exports: [OptaService],
 })

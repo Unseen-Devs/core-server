@@ -1,5 +1,5 @@
 import { Max, Min } from 'class-validator';
-import { ArgsType, Field, Int } from '@nestjs/graphql';
+import { ArgsType, Field, Int, ObjectType } from '@nestjs/graphql';
 import { FixtureStatus } from '../enums/opta.enum';
 
 @ArgsType()

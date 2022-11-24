@@ -1,4 +1,4 @@
-import { ObjectType, Field, Int, ID } from '@nestjs/graphql';
+import { ObjectType, Field, ID } from '@nestjs/graphql';
 import { Node, PaginationBase } from 'src/graphql/types/common.interface.entity';
 import { snowflake } from 'src/helpers/common';
 import {
@@ -8,10 +8,7 @@ import {
   Entity,
   UpdateDateColumn,
   BaseEntity,
-  ManyToOne,
-  JoinColumn,
 } from 'typeorm';
-import { PlayerEntity } from 'src/modules/player/entities/player.entity';
 
 @ObjectType('Event', {
   description: 'Event',
@@ -32,8 +29,8 @@ export class EventEntity extends BaseEntity implements Node {
   @Column({ length: 100 })
   fixtureId: string;
 
-  @Field({nullable: true})
-  @Column({nullable: true})
+  @Field(() => ID, {nullable: true})
+  @Column('bigint', {nullable: true})
   playerId: string;
 
   @Field({nullable: true})
@@ -56,12 +53,12 @@ export class EventEntity extends BaseEntity implements Node {
   @Column({ type: 'int', default: 0 })
   totalTouch: number;
 
-  @Field({ nullable: true })
-  @Column({ type: 'int', array: true, default: [] })
+  @Field({ defaultValue: [] })
+  @Column("simple-array", { nullable: true })
   scorerTouches: number[];
 
-  @Field({ nullable: true })
-  @Column({ type: 'int', array: true, default: [] })
+  @Field({ defaultValue: []  })
+  @Column("simple-array", { nullable: true })
   assistTouches: number[];
 
   @Field({ nullable: true })
@@ -74,10 +71,10 @@ export class EventEntity extends BaseEntity implements Node {
   @UpdateDateColumn()
   updatedAt: Date;
 
-  @Field(() => PlayerEntity, { nullable: true})
-  @ManyToOne(() => PlayerEntity, (player) => player.events)
-  @JoinColumn({ name: 'playerId' })
-  player: PlayerEntity;
+  // @Field(() => PlayerEntity, { nullable: true})
+  // @ManyToOne(() => PlayerEntity, (player) => player.events)
+  // @JoinColumn({ name: 'playerId' })
+  // player: PlayerEntity;
 
   constructor(data: DeepPartial<EventEntity>) {
     super();

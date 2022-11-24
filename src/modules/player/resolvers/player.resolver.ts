@@ -1,11 +1,18 @@
-import { Resolver, Query, Args } from '@nestjs/graphql';
+import { Resolver, Query, Args, Parent, ResolveField } from '@nestjs/graphql';
 import { PlayerService } from '../services/player.service';
 import { PlayerEntity, PlayerConnection } from '../entities/player.entity';
 import { PlayerArgs } from '../dto/player.args';
+import { EventEntity } from 'src/modules/event/entities/event.entity';
+import { EventService } from 'src/modules/event/services/event.services';
+import { forwardRef, Inject } from '@nestjs/common';
 
 @Resolver(() => PlayerEntity)
 export class PlayerResolver {
-  constructor(private readonly playerService: PlayerService) {}
+  constructor(
+    private readonly playerService: PlayerService,
+    @Inject(forwardRef(() => EventService))
+    private readonly eventService: EventService
+    ) {}
 
   @Query(() => PlayerConnection, {
     nullable: true,
@@ -37,5 +44,13 @@ export class PlayerResolver {
   })
   async findByWallet(@Args('walletAddress', { type: () => String }) walletAddress: string) {
     return await this.playerService.findByWallet(walletAddress);
+  }
+
+  @ResolveField(() => [EventEntity], {
+    nullable: true,
+  })
+  async events(@Parent() player: PlayerEntity) {    
+    const playerId = player.id;
+    return await this.eventService.getEvents({playerId});
   }
 }

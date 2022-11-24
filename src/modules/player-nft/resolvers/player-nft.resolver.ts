@@ -1,16 +1,14 @@
-import { Resolver, Query, Mutation, Args, Int, ResolveField, Parent } from '@nestjs/graphql';
+import { Resolver, Query, Mutation, Args, ResolveField, Parent } from '@nestjs/graphql';
 import { PlayerNftEntity } from '../entities/player-nft.entity';
 import { PlayerNftService } from '../services/player-nft.service';
 import { PlayerTierEnum } from '../../player/enums/player.enum';
 import { PlayerEntity } from '../../player/entities/player.entity';
-import { PlayerDataLoader } from 'src/modules/player/dataloaders/player.dataloader';
 import { PlayerService } from 'src/modules/player/services/player.service';
 import { SinatureResponse } from 'src/modules/common/common.entity';
 
 @Resolver(() => PlayerNftEntity)
 export class PlayerNftResolver {
   constructor(
-    private readonly playerDataLoader: PlayerDataLoader,
     private readonly playerNftService: PlayerNftService,
     private readonly playerService: PlayerService,
   ) {}

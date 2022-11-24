@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { PlayerService } from './services/player.service';
 import { PlayerResolver } from './resolvers/player.resolver';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -8,9 +8,10 @@ import { UserRepository } from '../users/repositories/users.repository';
 import { PlayerDataLoader } from './dataloaders/player.dataloader';
 import { ClubDataLoader } from '../club/dataloaders/club.dataloader';
 import { ClubRepository } from '../club/repositories/club.repository';
+import { EventModule } from '../event/event.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([PlayerEntity, PlayerRepository, UserRepository, ClubRepository])],
+  imports: [TypeOrmModule.forFeature([PlayerEntity, PlayerRepository, UserRepository, ClubRepository]), forwardRef(() => EventModule)],
   providers: [PlayerResolver, PlayerService, PlayerDataLoader, ClubDataLoader],
   exports: [PlayerService]
 })

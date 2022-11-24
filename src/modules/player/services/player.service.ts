@@ -5,7 +5,6 @@ import { PlayerArgs } from '../dto/player.args';
 import { getConnection } from 'typeorm';
 import { PlayerNftEntity } from '../../player-nft/entities/player-nft.entity';
 import { ClubRepository } from 'src/modules/club/repositories/club.repository';
-import { PlayerEntity } from '../entities/player.entity';
 
 @Injectable()
 export class PlayerService {

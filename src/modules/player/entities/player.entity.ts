@@ -1,24 +1,14 @@
-import { ObjectType, Field, Int, ID } from '@nestjs/graphql';
+import { Field, ID, Int, ObjectType } from '@nestjs/graphql';
 import { Node, PaginationBase } from 'src/graphql/types/common.interface.entity';
 import { snowflake } from 'src/helpers/common';
-import { User } from 'src/modules/users/entities/users.entity';
 import {
-  Column,
+  BaseEntity, Column,
   CreateDateColumn,
   DeepPartial,
-  Entity,
-  UpdateDateColumn,
-  BaseEntity,
-  ManyToMany,
-  JoinTable,
-  OneToMany,
-  ManyToOne,
-  JoinColumn,
+  Entity, JoinColumn, ManyToOne, UpdateDateColumn
 } from 'typeorm';
-import { PlayerTierEnum } from '../enums/player.enum';
-import { PlayerNftEntity } from '../../player-nft/entities/player-nft.entity';
 import { ClubEntity } from '../../club/entities/club.entity';
-import { EventEntity } from 'src/modules/event/entities/event.entity';
+import { PlayerTierEnum } from '../enums/player.enum';
 
 @ObjectType('Player', {
   description: 'Player',
@@ -34,10 +24,6 @@ export class PlayerEntity extends BaseEntity implements Node {
     unsigned: true,
   })
   id: string;
-
-  @Field({ nullable: true })
-  @Column({ length: 100 })
-  playerId: string;
 
   // @Field({ nullable: true })
   // @Column('bigint', {
@@ -115,10 +101,9 @@ export class PlayerEntity extends BaseEntity implements Node {
   @JoinColumn({ name: 'clubId' })
   club: ClubEntity;
 
-  @Field(() => [EventEntity])
-  @OneToMany(() => EventEntity, (event) => event.player)
-  @JoinColumn({ name: 'playerId' })
-  events: EventEntity[];
+  // @Field(() => [EventEntity])
+  // @OneToMany(() => EventEntity, (event) => event.player)
+  // events: EventEntity[];
 
   constructor(data: DeepPartial<PlayerEntity>) {
     super();
