@@ -101,12 +101,13 @@ export class OptaService {
       }
     }).then(async (response) => {
       if(response.status !== 200){
-        throw new ApolloError('Get Fixtures and Results Fail', 'get_tournament_schedule_failed');
+        console.log('Get Tournament Schedule Fail');
+        // throw new ApolloError('Get Tournament Schedule Fail', 'get_tournament_schedule_failed');
       }
       return response.data.match;
     }).catch((error) => {
-      console.log('error', error);
-      throw new ApolloError('Get Fixtures and Results Fail', 'get_fixtures_results_failed');
+      console.log('Get Fixtures and Results Fail', error);
+      // throw new ApolloError('Get Fixtures and Results Fail', 'get_fixtures_results_failed');
     });
   }
 
@@ -133,7 +134,8 @@ export class OptaService {
       }
     }).then(async (response) => {
       if(response.status !== 200){
-        throw new ApolloError('Get Fixtures and Results Fail', 'get_tournament_schedule_failed');
+        console.log('Get Fixtures and Results Fail');
+        // throw new ApolloError('Get Fixtures and Results Fail', 'get_tournament_schedule_failed');
       }
       const data = response.data.match;
       // Touch
@@ -195,8 +197,8 @@ export class OptaService {
       return { match: rs };
 
     }).catch((error) => {
-      console.log('error', error);
-      throw new ApolloError('Get Fixtures and Results Fail', 'get_fixtures_results_failed');
+      console.log('Get Fixtures and Results Fail', error);
+      // throw new ApolloError('Get Fixtures and Results Fail', 'get_fixtures_results_failed');
     });
   } 
 
