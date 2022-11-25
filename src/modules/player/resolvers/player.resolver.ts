@@ -51,6 +51,6 @@ export class PlayerResolver {
   })
   async events(@Parent() player: PlayerEntity) {    
     const playerId = player.id;
-    return await this.eventService.getEvents({playerId});
+    return await this.eventService.getEvents({playerIds: [playerId]});
   }
 }

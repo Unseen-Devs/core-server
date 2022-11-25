@@ -3,16 +3,19 @@ import { ArgsType, Field, Int, ObjectType } from "@nestjs/graphql";
 @ObjectType()
 @ArgsType()
 export class EventArgs{
-    @Field(() => Int)
-    fixtureId?: number
+    @Field({nullable: true})
+    fixtureId?: string;
 
     @Field(() => Int)
     gameweek?: number
 
-    @Field()
-    playerId?: string
+    @Field({nullable: true})
+    playerId?: string[]
 
-    @Field()
+    @Field({nullable: true})
+    playerIds?: string[]
+
+    @Field({nullable: true})
     playerOptaId?: string
 
     @Field({description: 'format YYYY-MM-DDZ'})
@@ -21,6 +24,6 @@ export class EventArgs{
     @Field({description: 'format YYYY-MM-DDZ'})
     dateTo?: string
 
-    @Field()
+    @Field({nullable: true})
     time?: string
 }

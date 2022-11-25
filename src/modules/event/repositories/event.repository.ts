@@ -26,7 +26,7 @@ export class EventRepository extends CommonRepository<EventEntity> {
     }
 
     getEvents(args: EventArgs){
-        const { fixtureId, dateFrom, dateTo, gameweek, playerId, playerOptaId} = args;
+        const { fixtureId, dateFrom, dateTo, gameweek, playerId, playerIds, playerOptaId} = args;
         const query = this.createQueryBuilder('events');
         if(fixtureId){
             query.where('fixtureId = :fixtureId', { fixtureId })
@@ -41,7 +41,10 @@ export class EventRepository extends CommonRepository<EventEntity> {
             query.where('gameweek = :gameweek', { gameweek })
         }
         if(playerId){
-            query.where('playerId = :playerId', { playerId })
+            query.where('playerId IN :playerId', { playerId })
+        }
+        if(playerIds){
+            query.where('playerId IN :playerIds', { playerIds })
         }
         if(playerOptaId){
             query.where('playerOptaId = :playerOptaId', { playerOptaId })
