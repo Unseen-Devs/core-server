@@ -43,6 +43,7 @@ export class RewardEntity extends BaseEntity implements Node {
   updatedAt: Date;
 
   @Field(() => RewardStatusEnum, {nullable: true})
+  @Column()
   status: RewardStatusEnum;
 
   @Field({nullable: true})

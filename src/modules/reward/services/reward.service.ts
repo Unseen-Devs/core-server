@@ -9,7 +9,8 @@ export class RewardService {
   async getBywalletAddress(walletAddress: string) {
     return await this.rewardRepository.find({
       where: {
-        walletAddress: walletAddress.toLocaleLowerCase()
+        walletAddress: walletAddress.toLocaleLowerCase(),
+        status: null
       }
     })
   }
