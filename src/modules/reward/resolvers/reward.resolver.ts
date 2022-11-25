@@ -1,14 +1,11 @@
-import { Resolver, Query, Mutation, Args, Int, ResolveField, Parent } from '@nestjs/graphql';
-import { RewardService } from '../services/reward.service';
-import { RewardEntity } from '../entities/reward.entity';
-import { CreateRewardInput } from '../dto/create-reward.input';
-import { UpdateRewardInput } from '../dto/update-reward.input';
-import { RewardTypeEnum } from '../enums/reward.enum';
-import { RewardWalletAddressTypeArgs } from '../dto/reward-walletaddress-type.args';
-import { PlayerEntity } from 'src/modules/player/entities/player.entity';
+import { Args, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
 import { PlayerNftEntity } from 'src/modules/player-nft/entities/player-nft.entity';
 import { PlayerNftService } from 'src/modules/player-nft/services/player-nft.service';
 import { PlayerService } from 'src/modules/player/services/player.service';
+import { RewardWalletAddressTypeArgs } from '../dto/reward-walletaddress-type.args';
+import { CreateRewardInput, UpdateRewardInput } from '../dto/reward.input';
+import { RewardEntity } from '../entities/reward.entity';
+import { RewardService } from '../services/reward.service';
 
 @Resolver(() => RewardEntity)
 export class RewardResolver {
@@ -44,16 +41,17 @@ export class RewardResolver {
   }
   
 
-  // @Mutation(() => PlayerNftEntity, {
-  //   name: 'creatReward',
-  //   nullable: true,
-  // })
-  // async genPlayerNft(
-  //   @Args('walletAddress', { type: () => String }) walletAddress: string,
-  //   @Args('type', { type: () => PlayerTierEnum }) type: PlayerTierEnum,
-  //   @Args('tokenId', { type: () => String }) tokenId: string,
-  //   @Args('transactionHash', { type: () => String }) transactionHash: string,
-  // ) {
-  //   return await this.playerNftService.genPlayerNft(walletAddress, type, tokenId, transactionHash);
-  // }
+  @Mutation(() => RewardEntity)
+  async createReward(@Args('input') input: CreateRewardInput): Promise<RewardEntity> {
+    const entity = await this.rewardService.create(input);
+    return entity;
+  }
+
+  @Mutation(() => RewardEntity)
+  async updateReward(
+      @Args('input') input: UpdateRewardInput,
+  ): Promise<RewardEntity> {
+    const {id, ...data} = input;
+    return this.rewardService.update(id, data);
+  }
 }

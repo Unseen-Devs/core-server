@@ -1,5 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { RewardTypeEnum } from '../enums/reward.enum';
+import { CreateRewardInput } from '../dto/reward.input';
+import { RewardEntity } from '../entities/reward.entity';
+import { RewardStatusEnum, RewardTypeEnum } from '../enums/reward.enum';
 import { RewardRepository } from '../repositories/reward.repository';
 
 @Injectable()
@@ -10,7 +12,7 @@ export class RewardService {
     return await this.rewardRepository.find({
       where: {
         walletAddress: walletAddress.toLocaleLowerCase(),
-        status: null
+        status: RewardStatusEnum.IN_PROGRESS
       }
     })
   }
@@ -25,12 +27,22 @@ export class RewardService {
   }
 
   async getRewardByWalletAndType(walletAddress: string, type?: RewardTypeEnum) {
-    const rewardType = type || RewardTypeEnum.Touch;
+    const rewardType = type || RewardTypeEnum.TOUCH;
     return await this.rewardRepository.findOne({
       where: {
         walletAddress,
         rewardType
       }
     });
+  }
+
+  async create(data: Partial<RewardEntity>): Promise<RewardEntity> {
+    const entity = new RewardEntity(data);
+    return this.rewardRepository.save(entity);
+}
+
+  async update(id: string, data: Partial<RewardEntity>): Promise<RewardEntity> {
+    await this.rewardRepository.update(id, data);
+    return this.rewardRepository.findOneOrFail(id);
   }
 }

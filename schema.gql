@@ -339,7 +339,6 @@ type Reward implements Node {
   rewardAmount: Float
   rewardType: RewardType
   transactionId: String
-  tokenId: String
   status: RewardStatus
   walletAddress: String
   playerNftTokenId: String
@@ -349,11 +348,12 @@ type Reward implements Node {
 }
 
 enum RewardType {
-  Touch
+  TOUCH
 }
 
 enum RewardStatus {
-  Completed
+  IN_PROGRESS
+  COMPLETED
 }
 
 type SinatureResponse {
@@ -375,9 +375,10 @@ type Query {
   getPlayerByWallet(walletAddress: String!, id: String!): Player
   getPlayersByWallet(walletAddress: String!): [Player!]
   getEvents(
-    fixtureId: Int
+    fixtureId: String
     gameweek: Int
-    playerId: String
+    playerId: [String!]
+    playerIds: [String!]
     playerOptaId: String
 
     """format YYYY-MM-DDZ"""
@@ -413,6 +414,8 @@ type Mutation {
   createUser(input: NewUserWalletInput!): User
   genPlayerNft(walletAddress: String!, type: PlayerTier!, tokenId: String!, transactionHash: String!): PlayerNft
   generateAkshunStoreSignature(walletAddress: String!): SinatureResponse
+  createReward(input: CreateRewardInput!): Reward!
+  updateReward(input: UpdateRewardInput!): Reward!
 }
 
 input FixturesAndResultsDTO {
@@ -422,4 +425,23 @@ input FixturesAndResultsDTO {
 
 input NewUserWalletInput {
   walletAddress: String!
+}
+
+input CreateRewardInput {
+  rewardAmount: Float!
+  rewardType: RewardType
+  transactionId: String
+  playerNftTokenId: String
+  status: RewardStatus = IN_PROGRESS
+  walletAddress: String
+}
+
+input UpdateRewardInput {
+  rewardAmount: Float
+  rewardType: RewardType
+  transactionId: String
+  playerNftTokenId: String
+  status: RewardStatus = IN_PROGRESS
+  walletAddress: String
+  id: ID!
 }

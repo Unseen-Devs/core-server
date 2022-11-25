@@ -1,6 +1,6 @@
 import { registerEnumType } from '@nestjs/graphql';
 export enum RewardTypeEnum {
-  Touch = 'TOUCH'
+  TOUCH = 'TOUCH'
 }
 
 registerEnumType(RewardTypeEnum, {
@@ -8,7 +8,8 @@ registerEnumType(RewardTypeEnum, {
 })
 
 export enum RewardStatusEnum {
-  Completed = 'COMPLETED'
+  IN_PROGRESS = 'IN_PROGRESS',
+  COMPLETED = 'COMPLETED'
 }
 
 registerEnumType(RewardStatusEnum, {

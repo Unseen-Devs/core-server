@@ -1,10 +1,11 @@
 import { ObjectType, Field, Int, ID } from '@nestjs/graphql';
-import { BaseEntity, Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, UpdateDateColumn } from 'typeorm';
+import { BaseEntity, Column, CreateDateColumn, DeepPartial, Entity, JoinColumn, ManyToOne, UpdateDateColumn } from 'typeorm';
 import { Node } from 'src/graphql/types/common.interface.entity';
 import { RewardTypeEnum, RewardStatusEnum } from '../enums/reward.enum';
 import { User } from 'src/modules/users/entities/users.entity';
 import { PlayerNftEntity } from '../../player-nft/entities/player-nft.entity';
 import { float } from '@elastic/elasticsearch/lib/api/types';
+import { snowflake } from 'src/helpers/common';
 
 @ObjectType('Reward', {
   description: 'Reward',
@@ -23,7 +24,7 @@ export class RewardEntity extends BaseEntity implements Node {
 
   @Field({nullable: true, defaultValue: 0})
   @Column('float')
-  rewardAmount: float;
+  rewardAmount: number;
 
   @Field(() => RewardTypeEnum, {nullable: true})
   rewardType: RewardTypeEnum;
@@ -31,10 +32,6 @@ export class RewardEntity extends BaseEntity implements Node {
   @Field({nullable: true})
   @Column()
   transactionId: string;
-
-  @Field({nullable: true})
-  @Column()
-  tokenId: string;
 
   @CreateDateColumn()
   createdAt: Date;
@@ -57,4 +54,9 @@ export class RewardEntity extends BaseEntity implements Node {
   @Field({nullable: true})
   @Column()
   playerNftTokenId: string;
+
+  constructor(data: DeepPartial<RewardEntity>) {
+    super();
+    Object.assign(this, { id: snowflake.nextId(), ...data });
+}
 }
