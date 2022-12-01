@@ -392,6 +392,7 @@ type Query {
   """Require `LIST_USER` permission"""
   users(limit: Int = 15, page: Int = 1, filters: [JSONObject!], sort: SortInput, s: String): UserConnection
   getPlayerNftsByWallet(walletAddress: String!): [PlayerNft!]
+  getPlayerNft(id: String!): PlayerNft
   getRewardsByWallet(walletAddress: String!): [Reward!]!
   getRewardByWalletAndType(walletAddress: String!, rewardType: RewardType): Reward!
   getReward(id: String!): Reward!

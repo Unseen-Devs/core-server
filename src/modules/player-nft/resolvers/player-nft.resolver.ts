@@ -21,6 +21,14 @@ export class PlayerNftResolver {
     return await this.playerNftService.findByWallet(walletAddress);
   }
 
+  @Query(() => PlayerNftEntity, {
+    name: 'getPlayerNft',
+    nullable: true,
+  })
+  async getPlayerNft(@Args('id', { type: () => String }) id: string) {
+    return await this.playerNftService.findById(id);
+  }
+
   @Mutation(() => PlayerNftEntity, {
     name: 'genPlayerNft',
     nullable: true,

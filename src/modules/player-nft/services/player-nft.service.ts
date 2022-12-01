@@ -25,6 +25,16 @@ export class PlayerNftService {
     }
   }
 
+  async findById(id: string) {
+    try {
+      return await this.playerNftRepository.findOne({
+        where: { id },
+      });
+    } catch (error) {
+      throw new ApolloError('Get PlayerNft Fail', 'get_player_Nft_failed');
+    }
+  }
+
   async findByWallet(walletAddress: string) {
     try {
       return await this.playerNftRepository
