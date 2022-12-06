@@ -7,7 +7,7 @@ import { User } from './modules/users/entities/users.entity';
 import { ClubEntity } from './modules/club/entities/club.entity';
 import { EventEntity } from './modules/event/entities/event.entity';
 import { EventHistoryEntity } from './modules/event-history/entities/event-history.entity';
-
+import { PassSeasonEntity } from './modules/pass-season/entities/pass-season.entity';
 
 export const typeORMConfig: TypeOrmModuleOptions = {
   // type: 'postgres',
@@ -19,7 +19,17 @@ export const typeORMConfig: TypeOrmModuleOptions = {
   password: process.env.DATABASE_PASSWORD,
   database: process.env.DATABASE_NAME,
   synchronize: process.env.DATABASE_SYNC === 'true',
-  entities: [Opta, User, PlayerEntity, PlayerNftEntity, RewardEntity, ClubEntity, EventEntity, EventHistoryEntity],
+  entities: [
+    Opta,
+    User,
+    PlayerEntity,
+    PlayerNftEntity,
+    RewardEntity,
+    ClubEntity,
+    EventEntity,
+    EventHistoryEntity,
+    PassSeasonEntity,
+  ],
   logging: process.env.DATABASE_LOGGING === 'true',
   // useUTC: true,
 };

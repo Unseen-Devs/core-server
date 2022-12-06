@@ -17,6 +17,7 @@ import { PlayerNftModule } from './modules/player-nft/player-nft.module';
 import { ClubModule } from './modules/club/club.module';
 import { EventModule } from './modules/event/event.module';
 import { EventHistoryModule } from './modules/event-history/event-history.module';
+import { PassSeasonModule } from './modules/pass-season/pass-season.module';
 
 @Module({
   imports: [
@@ -48,6 +49,7 @@ import { EventHistoryModule } from './modules/event-history/event-history.module
     ClubModule,
     EventModule,
     EventHistoryModule,
+    PassSeasonModule
   ],
 })
 export class AppModule implements NestModule {

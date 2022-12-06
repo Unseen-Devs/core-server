@@ -356,6 +356,24 @@ enum RewardStatus {
   COMPLETED
 }
 
+"""PassSeason"""
+type PassSeason implements Node {
+  id: ID!
+  tokenId: String
+  tier: String
+  transactionHash: String
+  seasonNumber: Float
+  status: PassSeasonStatus
+  walletAddress: String
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+enum PassSeasonStatus {
+  IN_PROGRESS
+  COMPLETED
+}
+
 type SinatureResponse {
   message: String!
   messageHash: String!
@@ -396,6 +414,7 @@ type Query {
   getRewardsByWallet(walletAddress: String!): [Reward!]!
   getRewardByWalletAndType(walletAddress: String!, rewardType: RewardType): Reward!
   getReward(id: String!): Reward!
+  getPassSeason(walletAddress: String!): [PassSeason!]
 }
 
 """
@@ -417,6 +436,7 @@ type Mutation {
   generateAkshunStoreSignature(walletAddress: String!): SinatureResponse
   createReward(input: CreateRewardInput!): Reward!
   updateReward(input: UpdateRewardInput!): Reward!
+  genPassNft(walletAddress: String!, type: PassTier!, tokenId: String!, seasonNumber: Float!, transactionHash: String!): PassSeason
 }
 
 input FixturesAndResultsDTO {
@@ -445,4 +465,9 @@ input UpdateRewardInput {
   status: RewardStatus = IN_PROGRESS
   walletAddress: String
   id: ID!
+}
+
+enum PassTier {
+  TIER1
+  TIER2
 }
