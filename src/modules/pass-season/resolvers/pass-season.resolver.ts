@@ -34,4 +34,19 @@ export class PassSeasonResolver {
     return await this.passSeasonService.genPassNft(walletAddress, tier, tokenId, transactionHash, seasonNumber);
   }
 
+  @Mutation(() => SinatureResponse, {
+    name: 'generateSeasonPassStoreSignature',
+    nullable: true,
+  })
+  async generateSeasonPassStoreSignature(@Args('walletAddress', { type: () => String }) walletAddress: string,) {
+    return await this.passSeasonService.generateSeasonPassStoreSignature(walletAddress);
+  }
+
+  @Mutation(() => SinatureResponse, {
+    name: 'generateOpenAkshunSignature',
+    nullable: true,
+  })
+  async generateOpenAkshunSignature(@Args('passId', { type: () => Number }) passId: number,) {
+    return await this.passSeasonService.generateOpenAkshunSignature(passId);
+  }
 }
