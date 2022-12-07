@@ -25,6 +25,10 @@ export class PlayerNftEntity extends BaseEntity implements Node {
 
   @Field({nullable: true})
   @Column()
+  passTokenId: string;
+
+  @Field({nullable: true})
+  @Column()
   rewardCode: number;
 
   @Field({nullable: true})

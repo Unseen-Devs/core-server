@@ -37,6 +37,7 @@ export class PlayerNftResolver {
     @Args('walletAddress', { type: () => String }) walletAddress: string,
     @Args('type', { type: () => PlayerTierEnum }) type: PlayerTierEnum,
     @Args('tokenId', { type: () => String }) tokenId: string,
+    @Args('passTokenId', { type: () => String }) passTokenId: string,
     @Args('transactionHash', { type: () => String }) transactionHash: string,
   ) {
     return await this.playerNftService.genPlayerNft(walletAddress, type, tokenId, transactionHash);

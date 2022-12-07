@@ -107,6 +107,7 @@ type EventHistory implements Node {
 type PlayerNft implements Node {
   id: ID!
   tokenId: String
+  passTokenId: String
   rewardCode: Float
   transactionHash: String
   walletAddress: String
@@ -438,7 +439,7 @@ type Mutation {
 
   """Create user by wallet address"""
   createUser(input: NewUserWalletInput!): User
-  genPlayerNft(walletAddress: String!, type: PlayerTier!, tokenId: String!, transactionHash: String!): PlayerNft
+  genPlayerNft(walletAddress: String!, type: PlayerTier!, tokenId: String!, passTokenId: String!, transactionHash: String!): PlayerNft
   generateAkshunStoreSignature(walletAddress: String!): SinatureResponse
   createReward(input: CreateRewardInput!): Reward!
   updateReward(input: UpdateRewardInput!): Reward!

@@ -18,7 +18,7 @@ export class PassSeasonService {
   async findOne(id: string) {
     try {
       return await this.passSeasonRepository.findOne({
-        where: { id },
+        where: { id , status: PassStatusEnum.IN_PROGRESS },
       });
     } catch (error) {
       throw new ApolloError('Get PassSeason Fail', 'get_pass_season_failed');
