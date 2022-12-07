@@ -40,7 +40,7 @@ export class PlayerNftResolver {
     @Args('passTokenId', { type: () => String }) passTokenId: string,
     @Args('transactionHash', { type: () => String }) transactionHash: string,
   ) {
-    return await this.playerNftService.genPlayerNft(walletAddress, type, tokenId, transactionHash);
+    return await this.playerNftService.genPlayerNft(walletAddress, type, tokenId, transactionHash, passTokenId);
   }
 
   @ResolveField(() => PlayerEntity, {
