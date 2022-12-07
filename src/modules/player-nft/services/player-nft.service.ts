@@ -1,18 +1,20 @@
 import { Injectable } from '@nestjs/common';
 import { ApolloError } from 'apollo-server-express';
-import { random } from 'lodash';
 import { PlayerEntity } from 'src/modules/player/entities/player.entity';
 import { PlayerTierEnum } from 'src/modules/player/enums/player.enum';
 import { PlayerRepository } from 'src/modules/player/repositories/player.repository';
+import { RewardService } from 'src/modules/reward/services/reward.service';
 import { PlayerNftRepository } from '../repositories/player-nft.repository';
 import { ClubEntity } from '../../club/entities/club.entity';
 import { akshunStoreSignature } from 'src/modules/common/signature';
+import { RewardStatusEnum, RewardTypeEnum } from 'src/modules/reward/enums/reward.enum';
 
 @Injectable()
 export class PlayerNftService {
   constructor(
     private readonly playerRepository: PlayerRepository,
     private readonly playerNftRepository: PlayerNftRepository,
+    private readonly rewardService: RewardService,
   ) {}
 
   async findOne(tokenId: string) {
@@ -49,7 +51,13 @@ export class PlayerNftService {
     }
   }
 
-  async genPlayerNft(walletAddress: string, type: PlayerTierEnum, tokenId: string, transactionHash: string, passTokenId: string) {
+  async genPlayerNft(
+    walletAddress: string,
+    type: PlayerTierEnum,
+    tokenId: string,
+    transactionHash: string,
+    passTokenId: string,
+  ) {
     try {
       const players = await this.playerRepository.find({
         where: {
@@ -88,6 +96,16 @@ export class PlayerNftService {
         transactionHash,
         passTokenId,
       });
+
+      this.rewardService.create({
+        rewardAmount: 0.001,
+        rewardType: RewardTypeEnum.TOUCH,
+        transactionId: '',
+        playerNftTokenId: tokenId,
+        status: RewardStatusEnum.IN_PROGRESS,
+        walletAddress,
+      });
+      
       return await this.playerNftRepository.save(createData);
     } catch (error) {
       throw new ApolloError('Get Player Fail', 'get_player_failed');
