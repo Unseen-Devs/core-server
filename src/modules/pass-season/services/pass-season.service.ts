@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { ApolloError } from 'apollo-server-express';
 import { random } from 'lodash';
 import { openAkshunSignature, seasonPassStoreSignature } from 'src/modules/common/signature';
-import { PlayerEntity } from 'src/modules/player/entities/player.entity';
+import { PassSeasonEntity } from '../entities/pass-season.entity';
 import { PassSeasonEnum, PassStatusEnum } from '../enums/pass-season.enum';
 import { PassSeasonRepository } from '../repositories/pass-season.repository';
 
@@ -15,10 +15,10 @@ export class PassSeasonService {
     private readonly passSeasonRepository: PassSeasonRepository,
   ) {}
 
-  async findOne(tokenId: string) {
+  async findOne(id: string) {
     try {
       return await this.passSeasonRepository.findOne({
-        where: { tokenId },
+        where: { id },
       });
     } catch (error) {
       throw new ApolloError('Get PassSeason Fail', 'get_pass_season_failed');
@@ -28,7 +28,7 @@ export class PassSeasonService {
   async findByWallet(walletAddress: string) {
     try {
       return await this.passSeasonRepository.find({
-        where: { walletAddress: walletAddress.toLowerCase() },
+        where: { walletAddress: walletAddress.toLowerCase(), status: PassStatusEnum.IN_PROGRESS },
       });
     } catch (error) {
       throw new ApolloError('Get PassSeason Fail', 'get_pass_season_failed');
@@ -66,5 +66,10 @@ export class PassSeasonService {
 
   async generateOpenAkshunSignature(passId: number) {
     return await openAkshunSignature(passId);
+  }
+
+  async update(id: string, data: Partial<PassSeasonEntity>): Promise<PassSeasonEntity> {
+    await this.passSeasonRepository.update(id, data);
+    return this.passSeasonRepository.findOneOrFail(id);
   }
 }

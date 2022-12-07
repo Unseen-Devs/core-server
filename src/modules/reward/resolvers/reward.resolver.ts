@@ -12,7 +12,6 @@ export class RewardResolver {
   constructor(
     private readonly rewardService: RewardService,
     private readonly playerNftService: PlayerNftService,
-    private readonly playerService: PlayerService,
   ) {}
 
   @Query(() => [RewardEntity], { name: 'getRewardsByWallet' })

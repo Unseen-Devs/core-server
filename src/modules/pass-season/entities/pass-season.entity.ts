@@ -2,7 +2,7 @@ import { Field, ID, ObjectType } from '@nestjs/graphql';
 import { Node, PaginationBase } from 'src/graphql/types/common.interface.entity';
 import { snowflake } from 'src/helpers/common';
 import { BaseEntity, Column, CreateDateColumn, DeepPartial, Entity, OneToMany, UpdateDateColumn } from 'typeorm';
-import { PassStatusEnum } from '../enums/pass-season.enum';
+import { PassStatusEnum,PassSeasonEnum } from '../enums/pass-season.enum';
 
 @ObjectType('PassSeason', {
   description: 'PassSeason',
@@ -25,7 +25,7 @@ export class PassSeasonEntity extends BaseEntity implements Node {
 
   @Field({ nullable: true })
   @Column()
-  tier: string;
+  tier: PassSeasonEnum;
 
   @Field({ nullable: true })
   @Column()
