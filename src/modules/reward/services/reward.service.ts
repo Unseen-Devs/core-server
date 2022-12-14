@@ -12,7 +12,7 @@ export class RewardService {
     return await this.rewardRepository.find({
       where: {
         walletAddress: walletAddress.toLocaleLowerCase(),
-        status: RewardStatusEnum.IN_PROGRESS
+        // status: RewardStatusEnum.IN_PROGRESS
       }
     })
   }
