@@ -25,6 +25,9 @@ export class FixturesAndResultsArgs {
   @Field(() => FixtureStatus)
   status: FixtureStatus;
 
+  // @Field(() => String)
+  // mtMDt: string;
+
   @Field(() => String)
-  mtMDt: string
+  week: string;
 }

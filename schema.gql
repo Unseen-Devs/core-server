@@ -392,8 +392,8 @@ type SinatureResponse {
 type Query {
   getTournamentCalendar: TournamentCalendarModel
   getTournamentSchedule: TournamentScheduleModel
-  getFixturesAndResults(status: FixtureStatus!, mtMDt: String!): FixturesModelAndResultsModel
-  getNFTMA3Events(status: FixtureStatus!, mtMDt: String!): [PlayerTouchModel!]
+  getFixturesAndResults(status: FixtureStatus!, week: String!): FixturesModelAndResultsModel
+  getNFTMA3Events(status: FixtureStatus!, week: String!): [PlayerTouchModel!]
   getPlayers(limit: Int = 15, page: Int = 1, filters: [JSONObject!], walletAddress: String): PlayerConnection
   getPlayer(id: String!): Player
   getPlayerByWallet(walletAddress: String!, id: String!): Player
@@ -451,7 +451,7 @@ type Mutation {
 
 input FixturesAndResultsDTO {
   status: FixtureStatus!
-  mtMDt: String!
+  week: String!
 }
 
 input NewUserWalletInput {
