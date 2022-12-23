@@ -394,6 +394,7 @@ type Query {
   getTournamentSchedule: TournamentScheduleModel
   getFixturesAndResults(status: FixtureStatus!, week: String!): FixturesModelAndResultsModel
   getNFTMA3Events(status: FixtureStatus!, week: String!): [PlayerTouchModel!]
+  getMatchDetail(id: String!): MatchInfoModel
   getPlayers(limit: Int = 15, page: Int = 1, filters: [JSONObject!], walletAddress: String): PlayerConnection
   getPlayer(id: String!): Player
   getPlayerByWallet(walletAddress: String!, id: String!): Player

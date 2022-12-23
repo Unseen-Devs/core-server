@@ -2,7 +2,7 @@ import { Args, Query, Resolver } from '@nestjs/graphql';
 import { Opta } from '../entities/opta.entity';
 import { OptaService } from '../services/opta.service';
 import { TournamentCalendarModel } from '../entities/opta_model.entity';
-import { FixturesModelAndResultsModel, TournamentScheduleModel } from '../entities/tournament.entity';
+import { FixturesModelAndResultsModel, MatchInfoModel, TournamentScheduleModel } from '../entities/tournament.entity';
 import { FixturesAndResultsArgs } from '../dto/opta.args';
 import { PlayerTouchModel } from '../entities/match_event_model.entity';
 
@@ -37,5 +37,12 @@ export class OptaResolver {
   })
   async getNFTMA3Events(@Args() input: FixturesAndResultsArgs) {
     return await this.optaService.getPastMatchesEvents(input);
+  }
+
+  @Query(() => MatchInfoModel, {
+    nullable: true,
+  })
+  async getMatchDetail(@Args('id') id: string) {
+    return await this.optaService.getDetailMatch(id);
   }
 }

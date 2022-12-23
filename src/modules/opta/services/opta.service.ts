@@ -150,62 +150,8 @@ export class OptaService {
           // throw new ApolloError('Get Fixtures and Results Fail', 'get_tournament_schedule_failed');
         }
         const data = response.data.match;
-        // Touch
-        const prsn = playerOptaId ?? 'atzboo800gv7gic2rgvgo0kq1';
-        const promises: Promise<any>[] = [];
-        data.forEach((d) => {
-          const urlTouch = `${OPTA_BASE_URL}/matchevent/${OPTA_OUTLET_AUTH_KEY}/${d.matchInfo.id}`;
-
-          if (
-            d.liveData.goal &&
-            d.liveData.goal
-              .map((o) => {
-                if (prsn === o.assistPlayerId || prsn === o.scorerId) return prsn;
-              })
-              .includes(prsn)
-          ) {
-            promises.push(
-              axios.get(urlTouch, {
-                params: {
-                  _rt: 'b',
-                  _fmt: 'json',
-                  type: touchEventTypeIds.toString(),
-                  prsn,
-                },
-              }),
-            );
-          }
-        });
-
-        const dataEvents: any[] = [];
-        await Promise.all(promises)
-          .then((res) => {
-            res.forEach((r) => {
-              if (r.data)
-                dataEvents.push({
-                  id: r.data.matchInfo.id,
-                  event: r.data.liveData.event.filter(
-                    (f) => touchEventTypeIds.includes(f.typeId) || (f.typeId == 4 && f.outcome == 1),
-                  ),
-                });
-            });
-          })
-          .catch((err) => {
-            console.log(err);
-          });
+    
         const rs = data.map((d) => {
-          const event = dataEvents.find((f) => f.id == d.matchInfo.id);
-          if (d.liveData.goal)
-            d.liveData.goal.map((e) => {
-              if (event) {
-                const events: any[] = event.event;
-                e.assistPlayerTouch = events.findIndex((f) => f.assist == 1 && f.playerId == e.assistPlayerId) + 1;
-
-                e.scorerPlayerTouch = events.findIndex((f) => f.typeId == 16 && f.playerId == e.scorerId) + 1;
-              }
-              return e;
-            });
-
           const obj = {
             id: d.matchInfo.id,
             date: d.matchInfo.date,
@@ -222,6 +168,40 @@ export class OptaService {
       })
       .catch((error) => {
         console.log('Get Fixtures and Results Fail', error);
+      });
+  }
+
+  async getDetailMatch(id: string) {
+    const url = `${OPTA_BASE_URL}/matchstats/${OPTA_OUTLET_AUTH_KEY}`;
+    
+    return await axios
+      .get(url, {
+        params: {
+          _rt: 'b',
+          _fmt: 'json',
+          fx: id
+        },
+      })
+      .then(async (response) => {
+        if (response.status !== 200) {
+          console.log('Get Match Detail Fail');
+        }
+        const data = response.data;      
+          const obj = {
+            id: data.matchInfo.id,
+            date: data.matchInfo.date,
+            time: data.matchInfo.time,
+            contestant: data.matchInfo.contestant,
+            matchStatus: data.liveData.matchDetails.matchStatus,
+            scores: data.liveData.matchDetails.scores,
+            goal: data.liveData.goal,
+          };
+
+          
+        return obj;
+      })
+      .catch((error) => {
+        console.log('Get Match Detail Fail', error);
         // throw new ApolloError('Get Fixtures and Results Fail', 'get_fixtures_results_failed');
       });
   }
